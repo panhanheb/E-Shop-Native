@@ -34,7 +34,18 @@ All UI text is in `Resources/Localizable.xcstrings`. English is the source langu
 
 ## Setup in Xcode
 
-### Option A: XcodeGen (recommended)
+### Option A: Open the included project (simplest)
+
+The repository includes `MyApp.xcodeproj`, which needs **Xcode 16 or later**. It uses folder-synced groups, so new files you add to the folders are picked up automatically.
+
+1. Open **`MyApp.xcodeproj`**. Do not use File > Open on the `customer_ios` folder itself.
+2. In the toolbar, select the **MyApp** scheme and an iPhone simulator.
+3. Press ⌘R to run and ⌘U to test.
+4. To run on a real iPhone, select the **MyApp** target, go to **Signing & Capabilities**, choose your **Team**, and change the bundle identifier to something unique.
+
+### Option B: Regenerate with XcodeGen
+
+`project.yml` describes the same project. Running XcodeGen replaces `MyApp.xcodeproj` with a freshly generated one.
 
 ```bash
 brew install xcodegen swiftlint
@@ -43,7 +54,7 @@ xcodegen generate
 open MyApp.xcodeproj
 ```
 
-### Option B: Manual
+### Option C: Manual
 
 1. In Xcode 16 or later, choose **File > New > Project > iOS App**. Name it `MyApp`, set Interface to SwiftUI and Testing System to Swift Testing, and include tests.
 2. Delete the generated `ContentView.swift`, `MyAppApp.swift`, and `Assets.xcassets`.

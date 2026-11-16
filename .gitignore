@@ -1,0 +1,19 @@
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# Office lock files
+~$*
