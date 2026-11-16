@@ -1,14 +1,16 @@
 # MyApp
 
-An e-commerce shopping app for iOS 17+ built with SwiftUI, MVVM, and Swift 6 strict concurrency. It runs on iPhone and iPad only; Mac and Apple Vision Pro are turned off.
+A beauty e-commerce app for iOS 17+ built with SwiftUI, MVVM, and Swift 6 strict concurrency. It has a warm cream and orange theme and runs on iPhone and iPad only; Mac and Apple Vision Pro are turned off.
 
 | Tab | Feature folder | What it does |
 | --- | --- | --- |
-| Shop | `Features/Home` | Product grid with category chips, search, and sort; product detail with stock, quantity, and Add to Cart |
-| Cart | `Features/Cart` | Change quantities, swipe to remove, see the free-shipping progress and totals, then check out with a delivery address and payment method (cash on delivery, KHQR, or card) |
-| Orders | `Features/Orders` | Order history with status badges, plus order detail (items, delivery, payment, totals) |
-| Profile | `Features/Profile` | View and edit your name, and sign out (which also empties the cart) |
-| Settings | `Features/Settings` | Theme, notifications, haptics, language, and app version |
+| Home | `Features/Home` | Greeting header (menu, notifications, bag with item count), swipeable hero banners, search with sort filter, category circles (Skincare, Makeup, Fragrance, Haircare, Tools, Offers), a Best Sellers row, a Special Offer banner, and a "Just For You" grid. Every card has a wishlist heart and an orange + button that adds it to the bag. |
+| Categories | `Features/Home` | One card per category, plus Offers, with product counts. Each opens a sortable product grid. |
+| Wishlist | `Features/Wishlist` | Hearted products, with the count shown on the tab badge |
+| Orders | `Features/Orders` | Order history with status badges, plus order detail |
+| Profile | `Features/Profile` | View and edit your name, open Settings (gear button), and sign out (which also empties the cart and wishlist) |
+
+The **cart and checkout** (`Features/Cart`) open from the bag button on Home. Checkout takes a delivery address and a payment method (cash on delivery, KHQR, or card). **Settings** (theme, notifications, haptics, language) open from the Home menu or from Profile.
 
 Sign-in and registration are in `Features/Auth`. Prices are in USD (`AppCurrency`). Shipping is free from $50; below that it costs $2.50 (`ShippingPolicy`).
 
@@ -21,7 +23,7 @@ Sign-in and registration are in `Features/Auth`. Prices are in USD (`AppCurrency
 | ViewModel | `@Observable @MainActor final class`. Holds `isLoading` / `errorMessage` / data and exposes `async` intents. |
 | Service | Protocol + REST implementation + in-memory mock. Injected through initializers. |
 
-`AppDependencies` (in `App/`) is the composition root: it builds services once and vends view models through factory methods. `SessionStore` owns auth state and the Keychain token. `CartViewModel` has a single shared instance there, so the Shop, Cart, and tab badge all show the same cart.
+`AppDependencies` (in `App/`) is the composition root: it builds services once and vends view models through factory methods. `SessionStore` owns auth state and the Keychain token. `ProductListViewModel` (the catalog), `CartViewModel`, and `WishlistViewModel` each have a single shared instance there, so every screen shows the same products, bag, and hearts.
 
 ## Backend
 
@@ -29,7 +31,7 @@ Sign-in and registration are in `Features/Auth`. Prices are in USD (`AppCurrency
 
 - Demo login: `demo@example.com` / `password123`
 - Registration creates new in-memory accounts.
-- The catalog has 8 sample products (one out of stock) and 2 past orders. Orders you place are added to the history.
+- The catalog has 10 sample beauty products (4 on sale, one sold out) and 2 past orders. Orders you place are added to the history.
 - Mock data resets when the app relaunches, and the cart is kept in memory only.
 
 To switch to the real API at `https://api.example.com/v1`, set `useMockServices` to `false`. The expected endpoints (paths in `AppEndPoint`) are:

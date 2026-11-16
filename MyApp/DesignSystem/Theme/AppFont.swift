@@ -10,6 +10,10 @@ enum AppFont {
     static let footnote = Font.footnote
     static let caption = Font.caption
     static let captionEmphasized = Font.caption.weight(.semibold)
+    /// Elegant serif for banner headlines (e.g. "Glow Naturally, Shine Beautifully").
+    static let display = Font.system(.title, design: .serif).weight(.medium)
+    /// Bold section headings such as "Best Sellers".
+    static let sectionTitle = Font.title3.weight(.bold)
 
     /// Fixed-size system font for icons (does not scale with Dynamic Type).
     static func icon(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {

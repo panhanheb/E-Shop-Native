@@ -4,7 +4,9 @@ import SwiftUI
 struct CartView: View {
     /// Shared app-wide cart.
     let cart: CartViewModel
-    /// Switches to the Shop tab from the empty state.
+    /// Shows a Close button when the cart is presented as a sheet.
+    var onClose: (() -> Void)?
+    /// Takes the customer back to shopping from the empty state.
     let onStartShopping: () -> Void
 
     @Environment(AppDependencies.self) private var dependencies
@@ -30,6 +32,12 @@ struct CartView: View {
             .background(AppColors.background)
             .navigationTitle("Cart")
             .toolbar {
+                if let onClose {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Close") { onClose() }
+                            .accessibilityIdentifier("cart.close")
+                    }
+                }
                 if !cart.isEmpty {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Clear", role: .destructive) {

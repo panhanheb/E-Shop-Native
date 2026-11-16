@@ -10,8 +10,12 @@ final class AppDependencies {
     let orderService: any OrderServiceProtocol
     let profileService: any ProfileServiceProtocol
     let sessionStore: SessionStore
-    /// Shared so every tab (shop, cart, badge) sees the same cart.
+    /// Shared catalog so Home, Categories, and product lists load products once.
+    let catalogViewModel: ProductListViewModel
+    /// Shared so every screen (Home bag badge, cart sheet, product detail) sees the same cart.
     let cartViewModel: CartViewModel
+    /// Shared so hearts on every card and the Wishlist tab stay in sync.
+    let wishlistViewModel: WishlistViewModel
     /// Shared so the root view can apply the selected appearance.
     let settingsViewModel: SettingsViewModel
     /// Whether the in-memory mock backend is in use.
@@ -27,6 +31,7 @@ final class AppDependencies {
         tokenStore: any TokenStoreProtocol,
         isUsingMockServices: Bool,
         cart: CartViewModel = CartViewModel(),
+        wishlist: WishlistViewModel = WishlistViewModel(),
         appVersion: String = Bundle.main.appVersion
     ) {
         self.authService = authService
@@ -39,7 +44,9 @@ final class AppDependencies {
             authService: authService,
             profileService: profileService
         )
+        self.catalogViewModel = ProductListViewModel(productService: productService)
         self.cartViewModel = cart
+        self.wishlistViewModel = wishlist
         self.settingsViewModel = SettingsViewModel(settingsService: settingsService, appVersion: appVersion)
     }
 
@@ -72,7 +79,8 @@ final class AppDependencies {
         latency: Duration = .milliseconds(600),
         signedInUser: User? = nil,
         settingsService: (any SettingsServiceProtocol)? = nil,
-        cart: CartViewModel = CartViewModel()
+        cart: CartViewModel = CartViewModel(),
+        wishlist: WishlistViewModel = WishlistViewModel()
     ) -> AppDependencies {
         let database = MockUserDatabase(signedInUser: signedInUser)
         return AppDependencies(
@@ -83,11 +91,12 @@ final class AppDependencies {
             settingsService: settingsService ?? SettingsService(),
             tokenStore: InMemoryTokenStore(token: signedInUser == nil ? nil : "preview-token"),
             isUsingMockServices: true,
-            cart: cart
+            cart: cart,
+            wishlist: wishlist
         )
     }
 
-    /// Instant, signed-in mock container for SwiftUI previews, with two items in the cart.
+    /// Instant, signed-in mock container for SwiftUI previews, with items in the cart and wishlist.
     static var preview: AppDependencies {
         mock(
             latency: .zero,
@@ -96,7 +105,8 @@ final class AppDependencies {
             cart: CartViewModel(items: [
                 CartItem(product: Product.mocks[0], quantity: 1),
                 CartItem(product: Product.mocks[2], quantity: 2)
-            ])
+            ]),
+            wishlist: WishlistViewModel(products: [Product.mocks[0], Product.mocks[4]])
         )
     }
 
@@ -114,11 +124,6 @@ final class AppDependencies {
         RegisterViewModel(authService: authService) { [sessionStore] response in
             try await sessionStore.signIn(with: response)
         }
-    }
-
-    /// Creates the catalog's view model.
-    func makeProductListViewModel() -> ProductListViewModel {
-        ProductListViewModel(productService: productService)
     }
 
     /// Creates a product detail view model that adds to the shared cart.
@@ -143,15 +148,16 @@ final class AppDependencies {
         OrderListViewModel(orderService: orderService)
     }
 
-    /// Creates the profile screen's view model. Signing out also empties the cart.
+    /// Creates the profile screen's view model. Signing out also empties the cart and wishlist.
     func makeProfileViewModel() -> ProfileViewModel {
         ProfileViewModel(
             user: sessionStore.currentUser,
             profileService: profileService,
             onProfileUpdated: { [sessionStore] user in sessionStore.updateUser(user) },
-            onSignOut: { [sessionStore, cartViewModel] in
+            onSignOut: { [sessionStore, cartViewModel, wishlistViewModel] in
                 await sessionStore.signOut()
                 cartViewModel.clear()
+                wishlistViewModel.clear()
             }
         )
     }

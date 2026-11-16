@@ -1,22 +1,27 @@
 import SwiftUI
 
-/// Tab bar shown once the user is signed in: Shop, Cart, Orders, Profile, Settings.
+/// Tab bar shown once the user is signed in: Home, Categories, Wishlist, Orders, Profile.
+/// The cart opens from the bag button on Home; Settings opens from the Home menu or Profile.
 struct MainTabView: View {
     @Environment(AppDependencies.self) private var dependencies
-    @State private var selectedTab: AppTab = .shop
+    @State private var selectedTab: AppTab = .home
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView(viewModel: dependencies.makeProductListViewModel())
-                .tabItem { Label("Shop", systemImage: AppImages.shop) }
-                .tag(AppTab.shop)
+            HomeView(catalog: dependencies.catalogViewModel)
+                .tabItem { Label("Home", systemImage: AppImages.home) }
+                .tag(AppTab.home)
 
-            CartView(cart: dependencies.cartViewModel) {
-                selectedTab = .shop
+            CategoriesView(catalog: dependencies.catalogViewModel)
+                .tabItem { Label("Categories", systemImage: AppImages.categories) }
+                .tag(AppTab.categories)
+
+            WishlistView(wishlist: dependencies.wishlistViewModel) {
+                selectedTab = .home
             }
-            .tabItem { Label("Cart", systemImage: AppImages.cart) }
-            .badge(dependencies.cartViewModel.itemCount)
-            .tag(AppTab.cart)
+            .tabItem { Label("Wishlist", systemImage: AppImages.wishlist) }
+            .badge(dependencies.wishlistViewModel.count)
+            .tag(AppTab.wishlist)
 
             OrdersView(viewModel: dependencies.makeOrderListViewModel())
                 .tabItem { Label("Orders", systemImage: AppImages.orders) }
@@ -25,11 +30,8 @@ struct MainTabView: View {
             ProfileView(viewModel: dependencies.makeProfileViewModel())
                 .tabItem { Label("Profile", systemImage: AppImages.profile) }
                 .tag(AppTab.profile)
-
-            SettingsView(viewModel: dependencies.settingsViewModel)
-                .tabItem { Label("Settings", systemImage: AppImages.settings) }
-                .tag(AppTab.settings)
         }
+        .tint(AppColors.primary)
     }
 }
 

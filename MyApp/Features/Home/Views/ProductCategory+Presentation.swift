@@ -4,33 +4,33 @@ extension ProductCategory {
     /// Localized display name.
     var title: LocalizedStringKey {
         switch self {
-        case .electronics: "Electronics"
-        case .fashion: "Fashion"
-        case .home: "Home & Living"
-        case .beauty: "Beauty"
-        case .sports: "Sports"
+        case .skincare: "Skincare"
+        case .makeup: "Makeup"
+        case .fragrance: "Fragrance"
+        case .haircare: "Haircare"
+        case .tools: "Tools"
         }
     }
 
-    /// SF Symbol for chips and image placeholders.
+    /// SF Symbol for category circles and image placeholders.
     var systemImage: String {
         switch self {
-        case .electronics: AppImages.categoryElectronics
-        case .fashion: AppImages.categoryFashion
-        case .home: AppImages.categoryHome
-        case .beauty: AppImages.categoryBeauty
-        case .sports: AppImages.categorySports
+        case .skincare: AppImages.categorySkincare
+        case .makeup: AppImages.categoryMakeup
+        case .fragrance: AppImages.categoryFragrance
+        case .haircare: AppImages.categoryHaircare
+        case .tools: AppImages.categoryTools
         }
     }
 
-    /// Tint for image placeholders.
+    /// Accent for icons and image placeholders.
     var tint: Color {
         switch self {
-        case .electronics: AppColors.info
-        case .fashion: AppColors.primary
-        case .home: AppColors.warning
-        case .beauty: AppColors.danger
-        case .sports: AppColors.success
+        case .skincare: AppColors.gold
+        case .makeup: AppColors.berry
+        case .fragrance: AppColors.rose
+        case .haircare: AppColors.cocoa
+        case .tools: AppColors.lilac
         }
     }
 }

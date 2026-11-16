@@ -3,6 +3,11 @@ import SwiftUI
 /// Product details with quantity selection and an add-to-cart button.
 struct ProductDetailView: View {
     @State private var viewModel: ProductDetailViewModel
+    @Environment(AppDependencies.self) private var dependencies
+
+    private var isFavorite: Bool {
+        dependencies.wishlistViewModel.contains(viewModel.product)
+    }
 
     /// Creates the view with its view model.
     init(viewModel: ProductDetailViewModel) {
@@ -16,7 +21,7 @@ struct ProductDetailView: View {
             VStack(alignment: .leading, spacing: AppSpacing.lg) {
                 ProductImageView(product: product, iconSize: AppFontSize.iconLarge * 1.5)
                     .frame(height: 300)
-                    .clipShape(RoundedRectangle(cornerRadius: AppRadius.large))
+                    .clipShape(RoundedRectangle(cornerRadius: AppRadius.xLarge))
 
                 if let errorMessage = viewModel.errorMessage {
                     ErrorBanner(message: errorMessage)
@@ -34,9 +39,18 @@ struct ProductDetailView: View {
         .navigationTitle(product.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if viewModel.isLoading {
-                ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
+                if viewModel.isLoading {
                     ProgressView()
+                } else {
+                    Button {
+                        dependencies.wishlistViewModel.toggle(viewModel.product)
+                    } label: {
+                        Image(systemName: isFavorite ? AppImages.favoriteFilled : AppImages.favorite)
+                            .foregroundStyle(isFavorite ? AppColors.rose : AppColors.textPrimary)
+                    }
+                    .accessibilityLabel(isFavorite ? Text("Remove from Wishlist") : Text("Add to Wishlist"))
+                    .accessibilityIdentifier("productDetail.favorite")
                 }
             }
         }
@@ -55,8 +69,11 @@ struct ProductDetailView: View {
                 .font(AppFont.caption)
                 .foregroundStyle(AppColors.textSecondary)
             Text(product.name)
-                .font(AppFont.title)
-            RatingView(rating: product.rating, reviewCount: product.reviewCount)
+                .font(AppFont.display)
+            Text(product.tagline)
+                .font(AppFont.callout)
+                .foregroundStyle(AppColors.textSecondary)
+            RatingView(rating: product.rating, reviewCount: product.reviewCount, starSize: 13)
             PriceText(product.price, originalPrice: product.originalPrice, font: AppFont.title)
             stockLabel
         }
@@ -128,6 +145,7 @@ struct ProductDetailView: View {
     NavigationStack {
         ProductDetailView(viewModel: dependencies.makeProductDetailViewModel(product: .mock))
     }
+    .environment(dependencies)
 }
 
 #Preview("Out of Stock") {
@@ -135,4 +153,5 @@ struct ProductDetailView: View {
     NavigationStack {
         ProductDetailView(viewModel: dependencies.makeProductDetailViewModel(product: .mockOutOfStock))
     }
+    .environment(dependencies)
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Product photo loaded from `imageURL`, with a category icon as placeholder.
+/// Product photo loaded from `imageURL`, with a styled category icon as placeholder.
 struct ProductImageView: View {
     /// The product whose image to show.
     let product: Product
@@ -9,14 +9,17 @@ struct ProductImageView: View {
 
     var body: some View {
         ZStack {
-            Rectangle()
-                .fill(product.category.tint.opacity(0.12))
+            LinearGradient(
+                colors: [AppColors.blush.opacity(0.55), AppColors.blush.opacity(0.2)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
 
             if let imageURL = product.imageURL {
                 AsyncImage(url: imageURL) { phase in
                     switch phase {
                     case .success(let image):
-                        image.resizable().scaledToFill()
+                        image.resizable().scaledToFit().padding(AppSpacing.sm)
                     case .failure:
                         placeholder
                     default:
@@ -34,12 +37,18 @@ struct ProductImageView: View {
     private var placeholder: some View {
         Image(systemName: product.category.systemImage)
             .font(AppFont.icon(iconSize))
-            .foregroundStyle(product.category.tint)
+            .foregroundStyle(product.category.tint.gradient)
+            .shadow(color: product.category.tint.opacity(0.25), radius: 8, y: 4)
     }
 }
 
 #Preview {
-    ProductImageView(product: .mock)
-        .frame(width: 160, height: 160)
-        .clipShape(RoundedRectangle(cornerRadius: AppRadius.medium))
+    HStack {
+        ForEach(ProductCategory.allCases) { category in
+            ProductImageView(product: Product.mocks.first { $0.category == category } ?? .mock, iconSize: 28)
+                .frame(width: 64, height: 64)
+                .clipShape(RoundedRectangle(cornerRadius: AppRadius.medium))
+        }
+    }
+    .padding()
 }

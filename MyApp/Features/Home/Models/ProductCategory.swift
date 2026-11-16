@@ -1,12 +1,12 @@
 import Foundation
 
-/// Top-level grouping of products in the catalog.
+/// Top-level grouping of beauty products in the catalog.
 enum ProductCategory: String, Codable, CaseIterable, Identifiable, Sendable {
-    case electronics
-    case fashion
-    case home
-    case beauty
-    case sports
+    case skincare
+    case makeup
+    case fragrance
+    case haircare
+    case tools
 
     var id: Self { self }
 }

@@ -12,12 +12,12 @@ final class MyAppUITests: XCTestCase {
     }
 
     @MainActor
-    func testLoginWithDemoCredentialsShowsShop() {
+    func testLoginWithDemoCredentialsShowsHome() {
         let app = launchApp()
 
         signIn(app, email: "demo@example.com", password: "password123")
 
-        XCTAssertTrue(app.navigationBars["Shop"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["home.title"].waitForExistence(timeout: 5))
     }
 
     @MainActor
@@ -30,10 +30,10 @@ final class MyAppUITests: XCTestCase {
     }
 
     @MainActor
-    func testBuyProductFromShopToConfirmation() {
+    func testBuyProductFromHomeToConfirmation() {
         let app = launchApp()
         signIn(app, email: "demo@example.com", password: "password123")
-        XCTAssertTrue(app.navigationBars["Shop"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["home.title"].waitForExistence(timeout: 5))
 
         // Open the first product and add it to the cart.
         let firstProduct = app.buttons.matching(identifier: "product.card").firstMatch
@@ -45,8 +45,11 @@ final class MyAppUITests: XCTestCase {
         addToCart.tap()
         app.alerts.buttons["OK"].tap()
 
-        // Go to the cart and start checkout.
-        app.tabBars.buttons["Cart"].tap()
+        // Back to Home, open the bag, and start checkout.
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        let bag = app.buttons["home.cart"]
+        XCTAssertTrue(bag.waitForExistence(timeout: 5))
+        bag.tap()
         let checkout = app.buttons["cart.checkout"]
         XCTAssertTrue(checkout.waitForExistence(timeout: 5))
         checkout.tap()
@@ -70,10 +73,24 @@ final class MyAppUITests: XCTestCase {
     }
 
     @MainActor
+    func testHeartingProductAddsItToWishlist() {
+        let app = launchApp()
+        signIn(app, email: "demo@example.com", password: "password123")
+        XCTAssertTrue(app.staticTexts["home.title"].waitForExistence(timeout: 5))
+
+        let heart = app.buttons.matching(identifier: "product.favorite").firstMatch
+        XCTAssertTrue(heart.waitForExistence(timeout: 5))
+        heart.tap()
+
+        app.tabBars.buttons["Wishlist"].tap()
+        XCTAssertTrue(app.buttons.matching(identifier: "product.card").firstMatch.waitForExistence(timeout: 5))
+    }
+
+    @MainActor
     func testSignOutReturnsToLogin() {
         let app = launchApp()
         signIn(app, email: "demo@example.com", password: "password123")
-        XCTAssertTrue(app.navigationBars["Shop"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["home.title"].waitForExistence(timeout: 5))
 
         app.tabBars.buttons["Profile"].tap()
         let signOut = app.buttons["profile.signOut"]

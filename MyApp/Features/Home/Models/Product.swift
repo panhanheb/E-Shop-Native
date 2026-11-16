@@ -4,6 +4,8 @@ import Foundation
 struct Product: Codable, Identifiable, Equatable, Hashable, Sendable {
     let id: UUID
     var name: String
+    /// Short benefit line shown under the name on cards, e.g. "Brightening & Glow".
+    var tagline: String
     var details: String
     /// Current selling price in `AppCurrency.code`.
     var price: Decimal

@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ added to your bag": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បានបន្ថែម %@ ទៅកន្ត្រករបស់អ្នក"
+          }
+        }
+      }
+    },
     "%@, %@": {
       "localizations": {
         "km": {
@@ -61,6 +71,16 @@
         }
       }
     },
+    "Add to Wishlist": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បន្ថែមទៅបញ្ជីប្រាថ្នា"
+          }
+        }
+      }
+    },
     "Added to Cart": {
       "localizations": {
         "km": {
@@ -71,12 +91,12 @@
         }
       }
     },
-    "All": {
+    "All Products": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "ទាំងអស់"
+            "value": "ផលិតផលទាំងអស់"
           }
         }
       }
@@ -101,12 +121,32 @@
         }
       }
     },
-    "Beauty": {
+    "Beautiful": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "សម្ផស្ស"
+            "value": "អ្នកស្រស់ស្អាត"
+          }
+        }
+      }
+    },
+    "Best Sellers": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លក់ដាច់បំផុត"
+          }
+        }
+      }
+    },
+    "BEST SELLERS": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លក់ដាច់បំផុត"
           }
         }
       }
@@ -161,6 +201,16 @@
         }
       }
     },
+    "Categories": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ប្រភេទ"
+          }
+        }
+      }
+    },
     "Checkout": {
       "localizations": {
         "km": {
@@ -187,6 +237,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "សម្អាត"
+          }
+        }
+      }
+    },
+    "Clear Search": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សម្អាតការស្វែងរក"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បិទ"
           }
         }
       }
@@ -321,6 +391,26 @@
         }
       }
     },
+    "Discover Beauty": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ស្វែងរកសម្ផស្ស"
+          }
+        }
+      }
+    },
+    "Discover the favorites everyone is talking about.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ស្វែងរកផលិតផលពេញនិយមដែលគ្រប់គ្នាកំពុងនិយាយ។"
+          }
+        }
+      }
+    },
     "Don't have an account? Create one": {
       "localizations": {
         "km": {
@@ -331,22 +421,22 @@
         }
       }
     },
+    "Done": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រួចរាល់"
+          }
+        }
+      }
+    },
     "Edit Profile": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
             "value": "កែប្រែប្រវត្តិរូប"
-          }
-        }
-      }
-    },
-    "Electronics": {
-      "localizations": {
-        "km": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "គ្រឿងអេឡិចត្រូនិក"
           }
         }
       }
@@ -381,12 +471,22 @@
         }
       }
     },
-    "Fashion": {
+    "Exclusive savings on skincare and makeup essentials.": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "ម៉ូដសម្លៀកបំពាក់"
+            "value": "ការបញ្ចុះតម្លៃពិសេសលើផលិតផលថែស្បែក និងគ្រឿងសម្អាង។"
+          }
+        }
+      }
+    },
+    "Explore our premium beauty collection for radiant you.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ស្វែងយល់ពីបណ្តុំផលិតផលសម្ផស្សលំដាប់ខ្ពស់ ដើម្បីភាពភ្លឺថ្លារបស់អ្នក។"
           }
         }
       }
@@ -397,6 +497,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ពេញនិយម"
+          }
+        }
+      }
+    },
+    "Fragrance": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទឹកអប់"
           }
         }
       }
@@ -421,6 +531,36 @@
         }
       }
     },
+    "Glow Naturally, Shine Beautifully": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ភ្លឺថ្លាដោយធម្មជាតិ ស្រស់ស្អាតគ្រប់ពេល"
+          }
+        }
+      }
+    },
+    "Grab Now": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទិញភ្លាម"
+          }
+        }
+      }
+    },
+    "Haircare": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថែរក្សាសក់"
+          }
+        }
+      }
+    },
     "Haptic Feedback": {
       "localizations": {
         "km": {
@@ -431,12 +571,22 @@
         }
       }
     },
-    "Home & Living": {
+    "Hello, %@! ✨": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "គេហដ្ឋាន និងការរស់នៅ"
+            "value": "សួស្តី %@! ✨"
+          }
+        }
+      }
+    },
+    "Home": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទំព័រដើម"
           }
         }
       }
@@ -481,6 +631,16 @@
         }
       }
     },
+    "Just For You": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "សម្រាប់អ្នក"
+          }
+        }
+      }
+    },
     "KHQR (Bank App)": {
       "localizations": {
         "km": {
@@ -507,6 +667,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ភ្លឺ"
+          }
+        }
+      }
+    },
+    "LIMITED TIME": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "រយៈពេលកំណត់"
           }
         }
       }
@@ -561,12 +731,52 @@
         }
       }
     },
+    "Loved by Thousands": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ពេញចិត្តដោយមនុស្សរាប់ពាន់"
+          }
+        }
+      }
+    },
+    "Makeup": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "គ្រឿងសម្អាង"
+          }
+        }
+      }
+    },
     "Member Since": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
             "value": "ជាសមាជិកតាំងពី"
+          }
+        }
+      }
+    },
+    "Menu": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ម៉ឺនុយ"
+          }
+        }
+      }
+    },
+    "My Cart": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "កន្ត្រករបស់ខ្ញុំ"
           }
         }
       }
@@ -591,6 +801,26 @@
         }
       }
     },
+    "NEW ARRIVALS": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ទំនិញមកដល់ថ្មី"
+          }
+        }
+      }
+    },
+    "New products are on the way. Check back soon.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផលិតផលថ្មីៗនឹងមកដល់ឆាប់ៗ។ សូមត្រឡប់មកមើលម្តងទៀត។"
+          }
+        }
+      }
+    },
     "New products are on the way. Pull to refresh or check back soon.": {
       "localizations": {
         "km": {
@@ -607,6 +837,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "គ្មានផលិតផលដែលត្រូវគ្នា"
+          }
+        }
+      }
+    },
+    "No Notifications Yet": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់មានការជូនដំណឹង"
           }
         }
       }
@@ -641,6 +881,16 @@
         }
       }
     },
+    "Nothing Here Yet": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មិនទាន់មានអ្វីនៅទីនេះ"
+          }
+        }
+      }
+    },
     "Notification delivery also requires permission in the iOS Settings app.": {
       "localizations": {
         "km": {
@@ -661,12 +911,42 @@
         }
       }
     },
+    "OFF": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បញ្ចុះ"
+          }
+        }
+      }
+    },
+    "Offers": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការផ្តល់ជូន"
+          }
+        }
+      }
+    },
     "OK": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
             "value": "យល់ព្រម"
+          }
+        }
+      }
+    },
+    "On selected beauty essentials": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លើផលិតផលសម្ផស្សដែលបានជ្រើសរើស"
           }
         }
       }
@@ -851,6 +1131,16 @@
         }
       }
     },
+    "Premium beauty, just for you": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផលិតផលសម្ផស្សលំដាប់ខ្ពស់ សម្រាប់អ្នក"
+          }
+        }
+      }
+    },
     "Price: High to Low": {
       "localizations": {
         "km": {
@@ -911,6 +1201,16 @@
         }
       }
     },
+    "Rated %.1f out of 5, %lld reviews": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការវាយតម្លៃ %1$.1f លើ 5 ពីការវាយតម្លៃ %2$lld"
+          }
+        }
+      }
+    },
     "Refresh": {
       "localizations": {
         "km": {
@@ -961,12 +1261,12 @@
         }
       }
     },
-    "Sale": {
+    "Remove from Wishlist": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "បញ្ចុះតម្លៃ"
+            "value": "ដកចេញពីបញ្ជីប្រាថ្នា"
           }
         }
       }
@@ -981,12 +1281,12 @@
         }
       }
     },
-    "Search products": {
+    "Search for products…": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "ស្វែងរកផលិតផល"
+            "value": "ស្វែងរកផលិតផល…"
           }
         }
       }
@@ -1031,12 +1331,12 @@
         }
       }
     },
-    "Shop": {
+    "Shop Now": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "ហាង"
+            "value": "ទិញឥឡូវនេះ"
           }
         }
       }
@@ -1081,6 +1381,26 @@
         }
       }
     },
+    "Skincare": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ថែរក្សាស្បែក"
+          }
+        }
+      }
+    },
+    "Sold Out": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "លក់អស់"
+          }
+        }
+      }
+    },
     "Something Went Wrong": {
       "localizations": {
         "km": {
@@ -1101,12 +1421,22 @@
         }
       }
     },
-    "Sports": {
+    "Special Offer": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
-            "value": "កីឡា"
+            "value": "ការផ្តល់ជូនពិសេស"
+          }
+        }
+      }
+    },
+    "Special Offers": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ការផ្តល់ជូនពិសេស"
           }
         }
       }
@@ -1157,6 +1487,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "តាមប្រព័ន្ធ"
+          }
+        }
+      }
+    },
+    "Tap the heart on any product to save it here.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ចុចរូបបេះដូងលើផលិតផលណាមួយ ដើម្បីរក្សាទុកនៅទីនេះ។"
           }
         }
       }
@@ -1241,6 +1581,16 @@
         }
       }
     },
+    "Tools": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ឧបករណ៍"
+          }
+        }
+      }
+    },
     "Top Rated": {
       "localizations": {
         "km": {
@@ -1257,6 +1607,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "សរុប"
+          }
+        }
+      }
+    },
+    "Treat Yourself Today": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផ្តល់រង្វាន់ដល់ខ្លួនឯងថ្ងៃនេះ"
           }
         }
       }
@@ -1281,6 +1641,16 @@
         }
       }
     },
+    "Up to %lld%% Off": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បញ្ចុះតម្លៃរហូតដល់ %lld%%"
+          }
+        }
+      }
+    },
     "Version": {
       "localizations": {
         "km": {
@@ -1291,12 +1661,42 @@
         }
       }
     },
+    "View All": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "មើលទាំងអស់"
+          }
+        }
+      }
+    },
+    "We'll let you know about new arrivals, special offers, and order updates.": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "យើងនឹងជូនដំណឹងអ្នកអំពីទំនិញថ្មី ការផ្តល់ជូនពិសេស និងបច្ចុប្បន្នភាពការបញ្ជាទិញ។"
+          }
+        }
+      }
+    },
     "Welcome Back": {
       "localizations": {
         "km": {
           "stringUnit": {
             "state": "translated",
             "value": "សូមស្វាគមន៍ការត្រឡប់មកវិញ"
+          }
+        }
+      }
+    },
+    "Wishlist": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បញ្ជីប្រាថ្នា"
           }
         }
       }
@@ -1357,6 +1757,44 @@
           "stringUnit": {
             "state": "translated",
             "value": "វគ្គប្រើប្រាស់របស់អ្នកបានផុតកំណត់។ សូមចូលគណនីម្តងទៀត។"
+          }
+        }
+      }
+    },
+    "Your Wishlist Is Empty": {
+      "localizations": {
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "បញ្ជីប្រាថ្នារបស់អ្នកទទេ"
+          }
+        }
+      }
+    },
+    "%lld products": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld product"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld products"
+                }
+              }
+            }
+          }
+        },
+        "km": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ផលិតផល %lld"
           }
         }
       }

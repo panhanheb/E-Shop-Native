@@ -4,6 +4,8 @@ import SwiftUI
 struct ProfileView: View {
     @State private var viewModel: ProfileViewModel
     @State private var isConfirmingSignOut = false
+    @State private var isShowingSettings = false
+    @Environment(AppDependencies.self) private var dependencies
 
     /// Creates the view with its view model.
     init(viewModel: ProfileViewModel) {
@@ -16,6 +18,19 @@ struct ProfileView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.background)
                 .navigationTitle("Profile")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isShowingSettings = true
+                        } label: {
+                            Label("Settings", systemImage: AppImages.settings)
+                        }
+                        .accessibilityIdentifier("profile.settings")
+                    }
+                }
+                .sheet(isPresented: $isShowingSettings) {
+                    SettingsView(viewModel: dependencies.settingsViewModel)
+                }
                 .sheet(isPresented: $viewModel.isEditing) {
                     EditProfileView(viewModel: viewModel)
                 }
@@ -113,4 +128,5 @@ struct ProfileView: View {
             onSignOut: {}
         )
     )
+    .environment(AppDependencies.preview)
 }
