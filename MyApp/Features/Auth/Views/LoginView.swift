@@ -20,7 +20,7 @@ struct LoginView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.lg) {
-                    header
+                    headerv 
                     form
 
                     if let errorMessage = viewModel.errorMessage {
