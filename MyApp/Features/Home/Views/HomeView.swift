@@ -1,33 +1,29 @@
 import SwiftUI
 
-/// The task list screen with search, filtering, and navigation to details.
+/// The shop screen: category chips, search, sort, and a grid of products.
 struct HomeView: View {
-    @State private var viewModel: TaskListViewModel
-    @State private var isPresentingAddTask = false
+    @State private var viewModel: ProductListViewModel
     @Environment(AppDependencies.self) private var dependencies
 
+    private let columns = [
+        GridItem(.flexible(), spacing: AppSpacing.md),
+        GridItem(.flexible(), spacing: AppSpacing.md)
+    ]
+
     /// Creates the view with its view model.
-    init(viewModel: TaskListViewModel) {
+    init(viewModel: ProductListViewModel) {
         _viewModel = State(initialValue: viewModel)
     }
 
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle("Tasks")
-                .searchable(text: $viewModel.searchText, prompt: "Search tasks")
-                .toolbar { toolbarContent }
-                .navigationDestination(for: TaskItem.self) { task in
-                    TaskDetailView(
-                        viewModel: dependencies.makeTaskDetailViewModel(
-                            task: task,
-                            onUpdate: { viewModel.didUpdate($0) },
-                            onDelete: { viewModel.didDelete($0) }
-                        )
-                    )
-                }
-                .sheet(isPresented: $isPresentingAddTask) {
-                    AddTaskView(viewModel: dependencies.makeAddTaskViewModel { viewModel.didCreate($0) })
+                .background(AppColors.background)
+                .navigationTitle("Shop")
+                .searchable(text: $viewModel.searchText, prompt: "Search products")
+                .toolbar { sortMenu }
+                .navigationDestination(for: Product.self) { product in
+                    ProductDetailView(viewModel: dependencies.makeProductDetailViewModel(product: product))
                 }
                 .alert("Something Went Wrong", isPresented: $viewModel.isErrorAlertPresented) {
                     Button("OK", role: .cancel) {}
@@ -42,88 +38,109 @@ struct HomeView: View {
     private var content: some View {
         if !viewModel.hasLoaded, let errorMessage = viewModel.errorMessage {
             ErrorStateView(message: errorMessage) {
-                Task { await viewModel.loadTasks() }
+                Task { await viewModel.loadProducts() }
             }
         } else if !viewModel.hasLoaded {
-            LoadingView(message: "Loading tasks…")
-        } else if viewModel.tasks.isEmpty {
+            LoadingView(message: "Loading products…")
+        } else if viewModel.products.isEmpty {
             EmptyStateView(
-                title: "No Tasks Yet",
-                systemImage: AppImages.tasks,
-                message: "Tap + to create your first task.",
-                actionTitle: "Add Task"
+                title: "No Products Yet",
+                systemImage: AppImages.shop,
+                message: "New products are on the way. Pull to refresh or check back soon.",
+                actionTitle: "Refresh"
             ) {
-                isPresentingAddTask = true
+                Task { await viewModel.loadProducts() }
             }
-        } else if viewModel.visibleTasks.isEmpty {
-            EmptyStateView(
-                title: "No Matching Tasks",
-                systemImage: AppImages.search,
-                message: "Try a different search or filter."
-            )
         } else {
-            taskList
+            catalog
         }
     }
 
-    private var taskList: some View {
-        List {
-            ForEach(viewModel.visibleTasks) { task in
-                NavigationLink(value: task) {
-                    TaskRowView(task: task) {
-                        Task { await viewModel.toggleCompletion(of: task) }
+    private var catalog: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                categoryChips
+
+                if viewModel.visibleProducts.isEmpty {
+                    EmptyStateView(
+                        title: "No Matching Products",
+                        systemImage: AppImages.search,
+                        message: "Try a different search or category."
+                    )
+                    .padding(.top, AppSpacing.xl)
+                } else {
+                    LazyVGrid(columns: columns, spacing: AppSpacing.md) {
+                        ForEach(viewModel.visibleProducts) { product in
+                            NavigationLink(value: product) {
+                                ProductCardView(product: product)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityIdentifier("product.card")
+                        }
                     }
+                    .padding(.horizontal, AppSpacing.md)
                 }
-                .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
-                        Task { await viewModel.delete(task) }
-                    } label: {
-                        Label("Delete", systemImage: AppImages.delete)
+            }
+            .padding(.vertical, AppSpacing.sm)
+        }
+        .refreshable { await viewModel.loadProducts() }
+    }
+
+    private var categoryChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: AppSpacing.sm) {
+                CategoryChip(
+                    title: "All",
+                    systemImage: AppImages.categoryAll,
+                    isSelected: viewModel.selectedCategory == nil
+                ) {
+                    viewModel.selectedCategory = nil
+                }
+
+                ForEach(ProductCategory.allCases) { category in
+                    CategoryChip(
+                        title: category.title,
+                        systemImage: category.systemImage,
+                        isSelected: viewModel.selectedCategory == category
+                    ) {
+                        viewModel.toggleCategory(category)
                     }
                 }
             }
+            .padding(.horizontal, AppSpacing.md)
         }
-        .listStyle(.insetGrouped)
-        .refreshable { await viewModel.loadTasks() }
     }
 
     @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
+    private var sortMenu: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
             Menu {
-                Picker("Filter", selection: $viewModel.filter) {
-                    ForEach(TaskFilter.allCases) { filter in
-                        Text(filter.title).tag(filter)
+                Picker("Sort By", selection: $viewModel.sort) {
+                    ForEach(ProductSort.allCases) { sort in
+                        Text(sort.title).tag(sort)
                     }
                 }
             } label: {
-                Label(
-                    "Filter",
-                    systemImage: viewModel.filter == .all
-                        ? AppImages.filter
-                        : AppImages.filterActive
-                )
+                Label("Sort By", systemImage: AppImages.sort)
             }
-        }
-
-        ToolbarItem(placement: .primaryAction) {
-            Button {
-                isPresentingAddTask = true
-            } label: {
-                Label("Add Task", systemImage: AppImages.add)
-            }
-            .accessibilityIdentifier("tasks.add")
         }
     }
 }
 
-#Preview("Tasks") {
+#Preview("Catalog") {
     let dependencies = AppDependencies.preview
-    HomeView(viewModel: dependencies.makeTaskListViewModel())
+    HomeView(viewModel: dependencies.makeProductListViewModel())
         .environment(dependencies)
 }
 
 #Preview("Empty") {
-    HomeView(viewModel: TaskListViewModel(taskService: MockTaskService(tasks: [], latency: .zero)))
+    HomeView(viewModel: ProductListViewModel(productService: MockProductService(products: [], latency: .zero)))
         .environment(AppDependencies.preview)
+}
+
+#Preview("Khmer") {
+    let dependencies = AppDependencies.preview
+    HomeView(viewModel: dependencies.makeProductListViewModel())
+        .environment(dependencies)
+        .environment(\.locale, Locale(identifier: "km"))
 }

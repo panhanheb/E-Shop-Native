@@ -14,12 +14,16 @@ enum AppEndPoint {
 
     static let profile = "me"
 
-    // MARK: Tasks
+    // MARK: Products
 
-    static let tasks = "tasks"
+    static let products = "products"
 
-    /// `tasks/{id}`
-    static func task(id: UUID) -> String {
-        "\(tasks)/\(id.uuidString)"
+    /// `products/{id}`
+    static func product(id: UUID) -> String {
+        "\(products)/\(id.uuidString)"
     }
+
+    // MARK: Orders
+
+    static let orders = "orders"
 }

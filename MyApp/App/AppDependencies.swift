@@ -6,9 +6,12 @@ import Observation
 @MainActor
 final class AppDependencies {
     let authService: any AuthServiceProtocol
-    let taskService: any TaskServiceProtocol
+    let productService: any ProductServiceProtocol
+    let orderService: any OrderServiceProtocol
     let profileService: any ProfileServiceProtocol
     let sessionStore: SessionStore
+    /// Shared so every tab (shop, cart, badge) sees the same cart.
+    let cartViewModel: CartViewModel
     /// Shared so the root view can apply the selected appearance.
     let settingsViewModel: SettingsViewModel
     /// Whether the in-memory mock backend is in use.
@@ -17,15 +20,18 @@ final class AppDependencies {
     /// Creates the container from concrete services.
     init(
         authService: any AuthServiceProtocol,
-        taskService: any TaskServiceProtocol,
+        productService: any ProductServiceProtocol,
+        orderService: any OrderServiceProtocol,
         profileService: any ProfileServiceProtocol,
         settingsService: any SettingsServiceProtocol,
         tokenStore: any TokenStoreProtocol,
         isUsingMockServices: Bool,
+        cart: CartViewModel = CartViewModel(),
         appVersion: String = Bundle.main.appVersion
     ) {
         self.authService = authService
-        self.taskService = taskService
+        self.productService = productService
+        self.orderService = orderService
         self.profileService = profileService
         self.isUsingMockServices = isUsingMockServices
         self.sessionStore = SessionStore(
@@ -33,6 +39,7 @@ final class AppDependencies {
             authService: authService,
             profileService: profileService
         )
+        self.cartViewModel = cart
         self.settingsViewModel = SettingsViewModel(settingsService: settingsService, appVersion: appVersion)
     }
 
@@ -51,7 +58,8 @@ final class AppDependencies {
         let apiClient = APIClient(baseURL: baseURL, tokenStore: tokenStore)
         return AppDependencies(
             authService: AuthService(apiClient: apiClient),
-            taskService: TaskService(apiClient: apiClient),
+            productService: ProductService(apiClient: apiClient),
+            orderService: OrderService(apiClient: apiClient),
             profileService: ProfileService(apiClient: apiClient),
             settingsService: SettingsService(),
             tokenStore: tokenStore,
@@ -63,22 +71,33 @@ final class AppDependencies {
     static func mock(
         latency: Duration = .milliseconds(600),
         signedInUser: User? = nil,
-        settingsService: (any SettingsServiceProtocol)? = nil
+        settingsService: (any SettingsServiceProtocol)? = nil,
+        cart: CartViewModel = CartViewModel()
     ) -> AppDependencies {
         let database = MockUserDatabase(signedInUser: signedInUser)
         return AppDependencies(
             authService: MockAuthService(database: database, latency: latency),
-            taskService: MockTaskService(latency: latency),
+            productService: MockProductService(latency: latency),
+            orderService: MockOrderService(latency: latency),
             profileService: MockProfileService(database: database, latency: latency),
             settingsService: settingsService ?? SettingsService(),
             tokenStore: InMemoryTokenStore(token: signedInUser == nil ? nil : "preview-token"),
-            isUsingMockServices: true
+            isUsingMockServices: true,
+            cart: cart
         )
     }
 
-    /// Instant, signed-in mock container for SwiftUI previews.
+    /// Instant, signed-in mock container for SwiftUI previews, with two items in the cart.
     static var preview: AppDependencies {
-        mock(latency: .zero, signedInUser: .mock, settingsService: MockSettingsService())
+        mock(
+            latency: .zero,
+            signedInUser: .mock,
+            settingsService: MockSettingsService(),
+            cart: CartViewModel(items: [
+                CartItem(product: Product.mocks[0], quantity: 1),
+                CartItem(product: Product.mocks[2], quantity: 2)
+            ])
+        )
     }
 
     // MARK: - View model factories
@@ -97,32 +116,43 @@ final class AppDependencies {
         }
     }
 
-    /// Creates the task list's view model.
-    func makeTaskListViewModel() -> TaskListViewModel {
-        TaskListViewModel(taskService: taskService)
+    /// Creates the catalog's view model.
+    func makeProductListViewModel() -> ProductListViewModel {
+        ProductListViewModel(productService: productService)
     }
 
-    /// Creates a task detail view model.
-    func makeTaskDetailViewModel(
-        task: TaskItem,
-        onUpdate: @escaping @MainActor (TaskItem) -> Void,
-        onDelete: @escaping @MainActor (TaskItem) -> Void
-    ) -> TaskDetailViewModel {
-        TaskDetailViewModel(task: task, taskService: taskService, onUpdate: onUpdate, onDelete: onDelete)
+    /// Creates a product detail view model that adds to the shared cart.
+    func makeProductDetailViewModel(product: Product) -> ProductDetailViewModel {
+        ProductDetailViewModel(product: product, productService: productService) { [cartViewModel] product, quantity in
+            cartViewModel.add(product, quantity: quantity)
+        }
     }
 
-    /// Creates the add-task form's view model.
-    func makeAddTaskViewModel(onCreate: @escaping @MainActor (TaskItem) -> Void) -> AddTaskViewModel {
-        AddTaskViewModel(taskService: taskService, onCreate: onCreate)
+    /// Creates a checkout view model for the current cart; the cart is cleared once the order is placed.
+    func makeCheckoutViewModel() -> CheckoutViewModel {
+        CheckoutViewModel(
+            items: cartViewModel.items,
+            fullName: sessionStore.currentUser?.name ?? "",
+            orderService: orderService,
+            onOrderPlaced: { [cartViewModel] _ in cartViewModel.clear() }
+        )
     }
 
-    /// Creates the profile screen's view model.
+    /// Creates the order history's view model.
+    func makeOrderListViewModel() -> OrderListViewModel {
+        OrderListViewModel(orderService: orderService)
+    }
+
+    /// Creates the profile screen's view model. Signing out also empties the cart.
     func makeProfileViewModel() -> ProfileViewModel {
         ProfileViewModel(
             user: sessionStore.currentUser,
             profileService: profileService,
             onProfileUpdated: { [sessionStore] user in sessionStore.updateUser(user) },
-            onSignOut: { [sessionStore] in await sessionStore.signOut() }
+            onSignOut: { [sessionStore, cartViewModel] in
+                await sessionStore.signOut()
+                cartViewModel.clear()
+            }
         )
     }
 }

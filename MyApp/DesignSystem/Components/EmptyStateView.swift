@@ -41,9 +41,9 @@ struct EmptyStateView: View {
 
 #Preview {
     EmptyStateView(
-        title: "No Tasks Yet",
-        systemImage: AppImages.tasks,
-        message: "Tap + to create your first task.",
-        actionTitle: "Add Task"
+        title: "Your Cart Is Empty",
+        systemImage: AppImages.cart,
+        message: "Browse the shop and add something you like.",
+        actionTitle: "Start Shopping"
     ) {}
 }

@@ -27,7 +27,7 @@ struct LoginView: View {
                         ErrorBanner(message: errorMessage)
                     }
 
-                    PrimaryButton("Sign In", isLoading: viewModel.isLoading, action: submit)
+                    PrimaryButton("Sign In", isLoading: viewModel.isLoading) { submit() }
                         .disabled(!viewModel.canSubmit)
                         .accessibilityIdentifier("login.submit")
 
@@ -49,13 +49,13 @@ struct LoginView: View {
 
     private var header: some View {
         VStack(spacing: AppSpacing.sm) {
-            Image(systemName: AppImages.checkmarkCircleFilled)
+            Image(systemName: AppImages.brand)
                 .font(AppFont.icon(AppFontSize.iconLarge))
                 .foregroundStyle(AppColors.primary)
                 .accessibilityHidden(true)
             Text("Welcome Back")
                 .font(AppFont.largeTitle)
-            Text("Sign in to manage your tasks.")
+            Text("Sign in to start shopping.")
                 .font(AppFont.callout)
                 .foregroundStyle(AppColors.textSecondary)
         }
@@ -86,7 +86,7 @@ struct LoginView: View {
             )
             .focused($focusedField, equals: .password)
             .submitLabel(.go)
-            .onSubmit(submit)
+            .onSubmit { submit() }
         }
     }
 

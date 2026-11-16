@@ -2,7 +2,7 @@ import Foundation
 
 /// Describes a single REST request relative to the API base URL.
 struct Endpoint: Sendable, Equatable {
-    /// Path relative to the base URL, e.g. `"tasks/42"`.
+    /// Path relative to the base URL, e.g. `"products/42"`.
     let path: String
     /// HTTP method of the request.
     let method: HTTPMethod

@@ -34,7 +34,7 @@ struct RegisterView: View {
                     ErrorBanner(message: errorMessage)
                 }
 
-                PrimaryButton("Create Account", isLoading: viewModel.isLoading, action: submit)
+                PrimaryButton("Create Account", isLoading: viewModel.isLoading) { submit() }
                     .disabled(!viewModel.canSubmit)
                     .accessibilityIdentifier("register.submit")
             }
@@ -50,7 +50,7 @@ struct RegisterView: View {
         VStack(spacing: AppSpacing.sm) {
             Text("Create Account")
                 .font(AppFont.largeTitle)
-            Text("Start organizing your work in minutes.")
+            Text("Create an account to shop and track your orders.")
                 .font(AppFont.callout)
                 .foregroundStyle(AppColors.textSecondary)
         }
@@ -94,7 +94,7 @@ struct RegisterView: View {
             )
             .focused($focusedField, equals: .confirmPassword)
             .submitLabel(.go)
-            .onSubmit(submit)
+            .onSubmit { submit() }
         }
     }
 

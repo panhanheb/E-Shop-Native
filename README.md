@@ -1,8 +1,16 @@
 # MyApp
 
-A task manager for iOS 17+ built with SwiftUI, MVVM, and Swift 6 strict concurrency. It runs on iPhone and iPad only; Mac and Apple Vision Pro are turned off.
+An e-commerce shopping app for iOS 17+ built with SwiftUI, MVVM, and Swift 6 strict concurrency. It runs on iPhone and iPad only; Mac and Apple Vision Pro are turned off.
 
-Features: **Auth** (login/register), **Home** (task list, detail, add), **Profile** (view/edit, sign out), **Settings** (appearance, notifications, haptics).
+| Tab | Feature folder | What it does |
+| --- | --- | --- |
+| Shop | `Features/Home` | Product grid with category chips, search, and sort; product detail with stock, quantity, and Add to Cart |
+| Cart | `Features/Cart` | Change quantities, swipe to remove, see the free-shipping progress and totals, then check out with a delivery address and payment method (cash on delivery, KHQR, or card) |
+| Orders | `Features/Orders` | Order history with status badges, plus order detail (items, delivery, payment, totals) |
+| Profile | `Features/Profile` | View and edit your name, and sign out (which also empties the cart) |
+| Settings | `Features/Settings` | Theme, notifications, haptics, language, and app version |
+
+Sign-in and registration are in `Features/Auth`. Prices are in USD (`AppCurrency`). Shipping is free from $50; below that it costs $2.50 (`ShippingPolicy`).
 
 ## Architecture
 
@@ -13,7 +21,7 @@ Features: **Auth** (login/register), **Home** (task list, detail, add), **Profil
 | ViewModel | `@Observable @MainActor final class`. Holds `isLoading` / `errorMessage` / data and exposes `async` intents. |
 | Service | Protocol + REST implementation + in-memory mock. Injected through initializers. |
 
-`AppDependencies` (in `App/`) is the composition root: it builds services once and vends view models through factory methods. `SessionStore` owns auth state and the Keychain token.
+`AppDependencies` (in `App/`) is the composition root: it builds services once and vends view models through factory methods. `SessionStore` owns auth state and the Keychain token. `CartViewModel` has a single shared instance there, so the Shop, Cart, and tab badge all show the same cart.
 
 ## Backend
 
@@ -21,8 +29,21 @@ Features: **Auth** (login/register), **Home** (task list, detail, add), **Profil
 
 - Demo login: `demo@example.com` / `password123`
 - Registration creates new in-memory accounts.
+- The catalog has 8 sample products (one out of stock) and 2 past orders. Orders you place are added to the history.
+- Mock data resets when the app relaunches, and the cart is kept in memory only.
 
-To switch to the real API at `https://api.example.com/v1`, set `useMockServices` to `false`. The expected endpoints are `POST auth/login`, `POST auth/register`, `POST auth/logout`, `GET/PATCH me`, `GET/POST tasks`, and `GET/PUT/DELETE tasks/{id}`. Bodies are JSON with ISO-8601 dates.
+To switch to the real API at `https://api.example.com/v1`, set `useMockServices` to `false`. The expected endpoints (paths in `AppEndPoint`) are:
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| POST | `auth/login`, `auth/register`, `auth/logout` | Authentication |
+| GET / PATCH | `me` | Profile |
+| GET | `products` | Catalog (no login needed) |
+| GET | `products/{id}` | Latest price and stock for one product |
+| GET | `orders` | Order history |
+| POST | `orders` | Place an order; the server calculates totals |
+
+Bodies are JSON with ISO-8601 dates and decimal prices.
 
 ## Languages: English and Khmer (ខ្មែរ)
 
@@ -30,7 +51,7 @@ All UI text is in `Resources/Localizable.xcstrings`. English is the source langu
 
 - **Switching language:** go to **Settings > Language** in the app, which opens iOS Settings > MyApp > Language. On the simulator you can also use **Edit Scheme > Run > Options > App Language > Khmer**.
 - **Adding text:** write it in English in the code (`Text("New label")`, `String(localized: "…")`), build, then open `Localizable.xcstrings` in Xcode and fill in the Khmer column.
-- **Previews:** `LoginView` and `SettingsView` each have a "Khmer" preview that uses `.environment(\.locale, Locale(identifier: "km"))`.
+- **Previews:** `LoginView`, `HomeView`, `MainTabView`, and `SettingsView` each have a "Khmer" preview that uses `.environment(\.locale, Locale(identifier: "km"))`.
 
 ## Setup in Xcode
 
