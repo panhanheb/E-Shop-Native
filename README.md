@@ -1,6 +1,6 @@
 # MyApp
 
-A task manager for iOS 17+ built with SwiftUI, MVVM, and Swift 6 strict concurrency.
+A task manager for iOS 17+ built with SwiftUI, MVVM, and Swift 6 strict concurrency. It runs on iPhone and iPad only; Mac and Apple Vision Pro are turned off.
 
 Features: **Auth** (login/register), **Home** (task list, detail, add), **Profile** (view/edit, sign out), **Settings** (appearance, notifications, haptics).
 
@@ -50,5 +50,6 @@ open MyApp.xcodeproj
 3. Drag the `MyApp/App`, `Core`, `DesignSystem`, `Features`, and `Resources` folders into the **MyApp** target. Choose "Create groups".
 4. Add `MyApp/Tests/UnitTests` to the **MyAppTests** target and `MyApp/Tests/UITests` to the **MyAppUITests** target.
 5. In Build Settings for every target, set **iOS Deployment Target** to 17.0, **Swift Language Version** to Swift 6, and **Strict Concurrency Checking** to Complete.
+   Then, on the **MyApp** target's **General** tab under **Supported Destinations**, keep only **iPhone** and **iPad** and remove **Mac (Designed for iPad)** and **Apple Vision (Designed for iPad)**.
 6. Under **Project > Info > Localizations**, click **+** and add **Khmer (km)**.
 7. Build and run (⌘R). Run tests with ⌘U.
