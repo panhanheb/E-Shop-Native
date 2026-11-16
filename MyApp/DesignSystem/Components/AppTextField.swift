@@ -45,8 +45,8 @@ struct AppTextField: View {
         HStack(spacing: AppSpacing.sm) {
             if let systemImage {
                 Image(systemName: systemImage)
-                    .foregroundStyle(AppColor.textSecondary)
-                    .frame(width: 20)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .frame(width: AppFontSize.iconSmall)
                     .accessibilityHidden(true)
             }
 
@@ -64,15 +64,15 @@ struct AppTextField: View {
             .accessibilityIdentifier(accessibilityID)
         }
         .padding(AppSpacing.md)
-        .background(AppColor.surface, in: RoundedRectangle(cornerRadius: AppRadius.medium))
+        .background(AppColors.surface, in: RoundedRectangle(cornerRadius: AppRadius.medium))
     }
 }
 
 #Preview {
     VStack(spacing: AppSpacing.md) {
-        AppTextField("Email", text: .constant(""), systemImage: "envelope", keyboardType: .emailAddress)
-        AppTextField("Password", text: .constant("secret"), systemImage: "lock", isSecure: true)
+        AppTextField("Email", text: .constant(""), systemImage: AppImages.email, keyboardType: .emailAddress)
+        AppTextField("Password", text: .constant("secret"), systemImage: AppImages.password, isSecure: true)
     }
     .padding()
-    .background(AppColor.background)
+    .background(AppColors.background)
 }

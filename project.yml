@@ -22,6 +22,16 @@ targets:
       - path: MyApp
         excludes:
           - "Tests/**"
+          - "Resources/Info.plist"
+    # Merged with the generated Info.plist. Lists the supported languages so iOS
+    # shows the per-app Language option (English / ខ្មែរ) in the Settings app.
+    info:
+      path: MyApp/Resources/Info.plist
+      properties:
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations:
+          - en
+          - km
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.myapp

@@ -37,9 +37,9 @@ struct TaskDetailView: View {
                         .font(AppFont.title)
                     HStack(spacing: AppSpacing.sm) {
                         PriorityBadge(priority: task.priority)
-                        Label(statusTitle, systemImage: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                        Label(statusTitle, systemImage: task.isCompleted ? AppImages.checkmarkCircleFilled : AppImages.circle)
                             .font(AppFont.caption)
-                            .foregroundStyle(task.isCompleted ? AppColor.success : AppColor.textSecondary)
+                            .foregroundStyle(task.isCompleted ? AppColors.success : AppColors.textSecondary)
                     }
                 }
                 .padding(.vertical, AppSpacing.xs)
@@ -48,7 +48,7 @@ struct TaskDetailView: View {
             Section("Notes") {
                 if task.notes.isEmpty {
                     Text("No notes")
-                        .foregroundStyle(AppColor.textSecondary)
+                        .foregroundStyle(AppColors.textSecondary)
                 } else {
                     Text(task.notes)
                 }
@@ -71,7 +71,7 @@ struct TaskDetailView: View {
                 Button {
                     Task { await viewModel.toggleCompletion() }
                 } label: {
-                    Label(toggleTitle, systemImage: task.isCompleted ? "arrow.uturn.backward" : "checkmark")
+                    Label(toggleTitle, systemImage: task.isCompleted ? AppImages.undo : AppImages.checkmark)
                 }
 
                 Button("Delete Task", role: .destructive) {

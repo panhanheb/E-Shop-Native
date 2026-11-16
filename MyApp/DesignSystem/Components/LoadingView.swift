@@ -13,7 +13,7 @@ struct LoadingView: View {
         ProgressView {
             Text(message)
                 .font(AppFont.callout)
-                .foregroundStyle(AppColor.textSecondary)
+                .foregroundStyle(AppColors.textSecondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

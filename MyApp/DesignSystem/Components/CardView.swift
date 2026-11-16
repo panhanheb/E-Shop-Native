@@ -13,7 +13,7 @@ struct CardView<Content: View>: View {
         content
             .padding(AppSpacing.md)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppColor.surface, in: RoundedRectangle(cornerRadius: AppRadius.large))
+            .background(AppColors.surface, in: RoundedRectangle(cornerRadius: AppRadius.large))
     }
 }
 
@@ -25,5 +25,5 @@ struct CardView<Content: View>: View {
         }
     }
     .padding()
-    .background(AppColor.background)
+    .background(AppColors.background)
 }

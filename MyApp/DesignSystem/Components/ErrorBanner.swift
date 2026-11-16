@@ -7,17 +7,17 @@ struct ErrorBanner: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: AppSpacing.sm) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(AppColor.danger)
+            Image(systemName: AppImages.warningFilled)
+                .foregroundStyle(AppColors.danger)
                 .accessibilityHidden(true)
             Text(message)
                 .font(AppFont.callout)
-                .foregroundStyle(AppColor.textPrimary)
+                .foregroundStyle(AppColors.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityIdentifier("errorBanner.message")
         }
         .padding(AppSpacing.md)
-        .background(AppColor.danger.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+        .background(AppColors.danger.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium))
     }
 }
 

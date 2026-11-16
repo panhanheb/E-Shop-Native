@@ -16,7 +16,7 @@ struct ErrorStateView: View {
 
     var body: some View {
         ContentUnavailableView {
-            Label("Something Went Wrong", systemImage: "exclamationmark.triangle")
+            Label("Something Went Wrong", systemImage: AppImages.warning)
         } description: {
             Text(message)
         } actions: {

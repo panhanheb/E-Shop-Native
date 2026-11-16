@@ -14,7 +14,7 @@ struct ProfileView: View {
         NavigationStack {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(AppColor.background)
+                .background(AppColors.background)
                 .navigationTitle("Profile")
                 .sheet(isPresented: $viewModel.isEditing) {
                     EditProfileView(viewModel: viewModel)
@@ -43,7 +43,7 @@ struct ProfileView: View {
         } else if viewModel.hasLoaded {
             EmptyStateView(
                 title: "No Profile",
-                systemImage: "person.crop.circle.badge.questionmark",
+                systemImage: AppImages.profileMissing,
                 message: "Your profile could not be found."
             )
         } else {
@@ -62,7 +62,7 @@ struct ProfileView: View {
                                 .font(AppFont.title)
                             Text(user.email)
                                 .font(AppFont.callout)
-                                .foregroundStyle(AppColor.textSecondary)
+                                .foregroundStyle(AppColors.textSecondary)
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -92,7 +92,7 @@ struct ProfileView: View {
                     if viewModel.isSigningOut {
                         ProgressView()
                     } else {
-                        Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
+                        Label("Sign Out", systemImage: AppImages.signOut)
                     }
                 }
                 .disabled(viewModel.isSigningOut)

@@ -43,21 +43,21 @@ struct LoginView: View {
                 .padding(AppSpacing.lg)
             }
             .scrollDismissesKeyboard(.interactively)
-            .background(AppColor.background)
+            .background(AppColors.background)
         }
     }
 
     private var header: some View {
         VStack(spacing: AppSpacing.sm) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(AppColor.primary)
+            Image(systemName: AppImages.checkmarkCircleFilled)
+                .font(AppFont.icon(AppFontSize.iconLarge))
+                .foregroundStyle(AppColors.primary)
                 .accessibilityHidden(true)
             Text("Welcome Back")
                 .font(AppFont.largeTitle)
             Text("Sign in to manage your tasks.")
                 .font(AppFont.callout)
-                .foregroundStyle(AppColor.textSecondary)
+                .foregroundStyle(AppColors.textSecondary)
         }
         .padding(.top, AppSpacing.xl)
     }
@@ -67,7 +67,7 @@ struct LoginView: View {
             AppTextField(
                 "Email",
                 text: $viewModel.email,
-                systemImage: "envelope",
+                systemImage: AppImages.email,
                 keyboardType: .emailAddress,
                 textContentType: .emailAddress,
                 accessibilityID: "login.email"
@@ -79,7 +79,7 @@ struct LoginView: View {
             AppTextField(
                 "Password",
                 text: $viewModel.password,
-                systemImage: "lock",
+                systemImage: AppImages.password,
                 isSecure: true,
                 textContentType: .password,
                 accessibilityID: "login.password"
@@ -93,7 +93,7 @@ struct LoginView: View {
     private var demoHint: some View {
         Text("Demo account: \(MockUserDatabase.demoEmail) / \(MockUserDatabase.demoPassword)")
             .font(AppFont.caption)
-            .foregroundStyle(AppColor.textSecondary)
+            .foregroundStyle(AppColors.textSecondary)
             .multilineTextAlignment(.center)
     }
 
@@ -103,8 +103,15 @@ struct LoginView: View {
     }
 }
 
-#Preview {
+#Preview("English") {
     let dependencies = AppDependencies.preview
     LoginView(viewModel: dependencies.makeLoginViewModel())
         .environment(dependencies)
+}
+
+#Preview("Khmer") {
+    let dependencies = AppDependencies.preview
+    LoginView(viewModel: dependencies.makeLoginViewModel())
+        .environment(dependencies)
+        .environment(\.locale, Locale(identifier: "km"))
 }

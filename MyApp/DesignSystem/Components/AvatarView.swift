@@ -19,12 +19,12 @@ struct AvatarView: View {
 
     var body: some View {
         Circle()
-            .fill(AppColor.primary.gradient)
+            .fill(AppColors.primary.gradient)
             .frame(width: size, height: size)
             .overlay {
                 Text(initials)
-                    .font(.system(size: size * 0.38, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .font(.system(size: size * AppFontSize.avatarInitialsRatio, weight: .semibold, design: .rounded))
+                    .foregroundStyle(AppColors.onPrimary)
             }
             .accessibilityHidden(true)
     }

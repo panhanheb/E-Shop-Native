@@ -8,15 +8,15 @@ struct TaskRowView: View {
     let onToggle: () -> Void
 
     private var toggleLabel: LocalizedStringKey {
-        task.isCompleted ? "Mark as incomplete" : "Mark as complete"
+        task.isCompleted ? "Mark as Incomplete" : "Mark as Complete"
     }
 
     var body: some View {
         HStack(spacing: AppSpacing.md) {
             Button(action: onToggle) {
-                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .font(.title2)
-                    .foregroundStyle(task.isCompleted ? AppColor.success : AppColor.textSecondary)
+                Image(systemName: task.isCompleted ? AppImages.checkmarkCircleFilled : AppImages.circle)
+                    .font(AppFont.icon(AppFontSize.iconMedium))
+                    .foregroundStyle(task.isCompleted ? AppColors.success : AppColors.textSecondary)
             }
             .buttonStyle(.borderless)
             .accessibilityLabel(toggleLabel)
@@ -25,17 +25,17 @@ struct TaskRowView: View {
                 Text(task.title)
                     .font(AppFont.headline)
                     .strikethrough(task.isCompleted)
-                    .foregroundStyle(task.isCompleted ? AppColor.textSecondary : AppColor.textPrimary)
+                    .foregroundStyle(task.isCompleted ? AppColors.textSecondary : AppColors.textPrimary)
                     .lineLimit(2)
 
                 if let dueDate = task.dueDate {
                     Label {
                         Text(dueDate, format: .dateTime.day().month(.abbreviated))
                     } icon: {
-                        Image(systemName: "calendar")
+                        Image(systemName: AppImages.calendar)
                     }
                     .font(AppFont.caption)
-                    .foregroundStyle(AppColor.textSecondary)
+                    .foregroundStyle(AppColors.textSecondary)
                 }
             }
 

@@ -7,13 +7,13 @@ struct MainTabView: View {
     var body: some View {
         TabView {
             HomeView(viewModel: dependencies.makeTaskListViewModel())
-                .tabItem { Label("Tasks", systemImage: "checklist") }
+                .tabItem { Label("Tasks", systemImage: AppImages.tasks) }
 
             ProfileView(viewModel: dependencies.makeProfileViewModel())
-                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
+                .tabItem { Label("Profile", systemImage: AppImages.profile) }
 
             SettingsView(viewModel: dependencies.settingsViewModel)
-                .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tabItem { Label("Settings", systemImage: AppImages.settings) }
         }
     }
 }

@@ -42,7 +42,7 @@ struct EmptyStateView: View {
 #Preview {
     EmptyStateView(
         title: "No Tasks Yet",
-        systemImage: "checklist",
+        systemImage: AppImages.tasks,
         message: "Tap + to create your first task.",
         actionTitle: "Add Task"
     ) {}

@@ -9,7 +9,7 @@ extension KeychainError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .unexpectedStatus(let status):
-            String(localized: "Secure storage failed (code \(status)).")
+            String(localized: "Secure storage failed (code \(Int(status))).")
         }
     }
 }

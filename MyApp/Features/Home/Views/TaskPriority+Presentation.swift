@@ -13,9 +13,9 @@ extension TaskPriority {
     /// Accent color used for badges.
     var color: Color {
         switch self {
-        case .low: AppColor.info
-        case .medium: AppColor.warning
-        case .high: AppColor.danger
+        case .low: AppColors.info
+        case .medium: AppColors.warning
+        case .high: AppColors.danger
         }
     }
 }

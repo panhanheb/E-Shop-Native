@@ -26,14 +26,14 @@ struct PrimaryButton: View {
                     .opacity(isLoading ? 0 : 1)
                 if isLoading {
                     ProgressView()
-                        .tint(.white)
+                        .tint(AppColors.onPrimary)
                 }
             }
             .font(AppFont.headline)
-            .foregroundStyle(.white)
+            .foregroundStyle(AppColors.onPrimary)
             .frame(maxWidth: .infinity, minHeight: 50)
             .background(
-                AppColor.primary.opacity(isEnabled ? 1 : 0.4),
+                AppColors.primary.opacity(isEnabled ? 1 : 0.4),
                 in: RoundedRectangle(cornerRadius: AppRadius.medium)
             )
             .contentShape(RoundedRectangle(cornerRadius: AppRadius.medium))

@@ -49,7 +49,7 @@ struct HomeView: View {
         } else if viewModel.tasks.isEmpty {
             EmptyStateView(
                 title: "No Tasks Yet",
-                systemImage: "checklist",
+                systemImage: AppImages.tasks,
                 message: "Tap + to create your first task.",
                 actionTitle: "Add Task"
             ) {
@@ -58,7 +58,7 @@ struct HomeView: View {
         } else if viewModel.visibleTasks.isEmpty {
             EmptyStateView(
                 title: "No Matching Tasks",
-                systemImage: "magnifyingglass",
+                systemImage: AppImages.search,
                 message: "Try a different search or filter."
             )
         } else {
@@ -78,7 +78,7 @@ struct HomeView: View {
                     Button(role: .destructive) {
                         Task { await viewModel.delete(task) }
                     } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label("Delete", systemImage: AppImages.delete)
                     }
                 }
             }
@@ -100,8 +100,8 @@ struct HomeView: View {
                 Label(
                     "Filter",
                     systemImage: viewModel.filter == .all
-                        ? "line.3.horizontal.decrease.circle"
-                        : "line.3.horizontal.decrease.circle.fill"
+                        ? AppImages.filter
+                        : AppImages.filterActive
                 )
             }
         }
@@ -110,7 +110,7 @@ struct HomeView: View {
             Button {
                 isPresentingAddTask = true
             } label: {
-                Label("Add Task", systemImage: "plus")
+                Label("Add Task", systemImage: AppImages.add)
             }
             .accessibilityIdentifier("tasks.add")
         }

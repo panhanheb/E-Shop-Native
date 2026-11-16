@@ -26,7 +26,7 @@ struct RegisterView: View {
                 if let validationMessage = viewModel.validationMessage {
                     Text(validationMessage)
                         .font(AppFont.caption)
-                        .foregroundStyle(AppColor.danger)
+                        .foregroundStyle(AppColors.danger)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
@@ -41,7 +41,7 @@ struct RegisterView: View {
             .padding(AppSpacing.lg)
         }
         .scrollDismissesKeyboard(.interactively)
-        .background(AppColor.background)
+        .background(AppColors.background)
         .navigationTitle("Register")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -52,13 +52,13 @@ struct RegisterView: View {
                 .font(AppFont.largeTitle)
             Text("Start organizing your work in minutes.")
                 .font(AppFont.callout)
-                .foregroundStyle(AppColor.textSecondary)
+                .foregroundStyle(AppColors.textSecondary)
         }
     }
 
     private var form: some View {
         VStack(spacing: AppSpacing.md) {
-            AppTextField("Full Name", text: $viewModel.name, systemImage: "person", textContentType: .name)
+            AppTextField("Full Name", text: $viewModel.name, systemImage: AppImages.person, textContentType: .name)
                 .focused($focusedField, equals: .name)
                 .submitLabel(.next)
                 .onSubmit { focusedField = .email }
@@ -66,7 +66,7 @@ struct RegisterView: View {
             AppTextField(
                 "Email",
                 text: $viewModel.email,
-                systemImage: "envelope",
+                systemImage: AppImages.email,
                 keyboardType: .emailAddress,
                 textContentType: .emailAddress
             )
@@ -77,7 +77,7 @@ struct RegisterView: View {
             AppTextField(
                 "Password",
                 text: $viewModel.password,
-                systemImage: "lock",
+                systemImage: AppImages.password,
                 isSecure: true,
                 textContentType: .newPassword
             )
@@ -88,7 +88,7 @@ struct RegisterView: View {
             AppTextField(
                 "Confirm Password",
                 text: $viewModel.confirmPassword,
-                systemImage: "lock.rotation",
+                systemImage: AppImages.confirmPassword,
                 isSecure: true,
                 textContentType: .newPassword
             )
