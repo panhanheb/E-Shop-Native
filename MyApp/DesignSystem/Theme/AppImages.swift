@@ -50,7 +50,6 @@ enum AppImages {
 
     // MARK: Product categories
 
-    static let categoryAll = "square.grid.2x2"
     static let categorySkincare = "drop.fill"
     static let categoryMakeup = "paintbrush.pointed.fill"
     static let categoryFragrance = "sparkles"

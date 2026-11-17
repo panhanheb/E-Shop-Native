@@ -7,8 +7,6 @@ enum AppColors {
 
     /// Main brand color: warm orange (from `AccentColor` in the asset catalog).
     static let primary = Color.accentColor
-    /// Soft tint of the brand color for icon backgrounds and highlights.
-    static let primarySoft = Color.accentColor.opacity(0.14)
     /// Secondary brand color: rose gold.
     static let secondary = Color(hex: 0xC99A7B)
     /// Content drawn on top of `primary` (button titles, avatar initials).
@@ -32,7 +30,6 @@ enum AppColors {
     // MARK: Lines and shadows
 
     static let border = Color(uiColor: .separator)
-    static let divider = Color(uiColor: .opaqueSeparator)
     /// Very soft shadow for floating cards.
     static let shadow = Color.black.opacity(0.06)
 
