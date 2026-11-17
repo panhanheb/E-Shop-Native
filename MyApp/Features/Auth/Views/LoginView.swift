@@ -20,7 +20,7 @@ struct LoginView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.lg) {
-                    headerv 
+                    header
                     form
 
                     if let errorMessage = viewModel.errorMessage {
@@ -49,9 +49,10 @@ struct LoginView: View {
 
     private var header: some View {
         VStack(spacing: AppSpacing.sm) {
-            Image(systemName: AppImages.brand)
-                .font(AppFont.icon(AppFontSize.iconLarge))
-                .foregroundStyle(AppColors.primary)
+            Image(AppImages.logo)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 180, height: 180)
                 .accessibilityHidden(true)
             Text("Welcome Back")
                 .font(AppFont.largeTitle)
