@@ -12,6 +12,17 @@ extension ProductCategory {
         }
     }
 
+    /// Short line under the name on the Home "Featured" cards.
+    var featureTagline: LocalizedStringKey {
+        switch self {
+        case .skincare: "Your daily glow ritual"
+        case .makeup: "Bold looks, every day"
+        case .fragrance: "Scents that stay with you"
+        case .haircare: "Shine from root to tip"
+        case .tools: "Pro results at home"
+        }
+    }
+
     /// SF Symbol for category circles and image placeholders.
     var systemImage: String {
         switch self {

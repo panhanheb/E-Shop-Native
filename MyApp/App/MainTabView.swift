@@ -3,12 +3,12 @@ import SwiftUI
 /// Tab bar shown once the user is signed in: Home, Categories, Wishlist, Orders, Profile.
 /// The cart opens from the bag button on Home; Settings opens from the Home menu or Profile.
 struct MainTabView: View {
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
     @State private var selectedTab: AppTab = .home
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView(catalog: dependencies.catalogViewModel)
+            HomeView(catalog: dependencies.catalogViewModel) { selectedTab = $0 }
                 .tabItem { Label("Home", systemImage: AppImages.home) }
                 .tag(AppTab.home)
 
@@ -37,11 +37,11 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView()
-        .environment(AppDependencies.preview)
+        .environment(DependencyContainer.preview)
 }
 
 #Preview("Khmer") {
     MainTabView()
-        .environment(AppDependencies.preview)
+        .environment(DependencyContainer.preview)
         .environment(\.locale, Locale(identifier: "km"))
 }

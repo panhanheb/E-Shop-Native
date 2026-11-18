@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// The shopping cart. One shared instance lives in `AppDependencies` so every tab sees the same cart.
+/// The shopping cart. One shared instance lives in `DependencyContainer` so every tab sees the same cart.
 @Observable
 @MainActor
 final class CartViewModel {

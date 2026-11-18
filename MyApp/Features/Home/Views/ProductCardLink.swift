@@ -6,7 +6,7 @@ struct ProductCardLink: View {
     /// Called after the product is added to the cart (e.g. to show a toast).
     var onAdded: (Product) -> Void = { _ in }
 
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
 
     var body: some View {
         NavigationLink(value: product) {
@@ -31,5 +31,5 @@ struct ProductCardLink: View {
             .frame(width: 170)
             .padding()
     }
-    .environment(AppDependencies.preview)
+    .environment(DependencyContainer.preview)
 }

@@ -5,7 +5,7 @@ struct ProfileView: View {
     @State private var viewModel: ProfileViewModel
     @State private var isConfirmingSignOut = false
     @State private var isShowingSettings = false
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
 
     /// Creates the view with its view model.
     init(viewModel: ProfileViewModel) {
@@ -128,5 +128,5 @@ struct ProfileView: View {
             onSignOut: {}
         )
     )
-    .environment(AppDependencies.preview)
+    .environment(DependencyContainer.preview)
 }

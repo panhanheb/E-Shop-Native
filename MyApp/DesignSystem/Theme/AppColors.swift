@@ -5,7 +5,7 @@ import SwiftUI
 enum AppColors {
     // MARK: Brand
 
-    /// Main brand color: warm orange (from `AccentColor` in the asset catalog).
+    /// Main brand color: brand red (from `AccentColor` in the asset catalog).
     static let primary = Color.accentColor
     /// Secondary brand color: rose gold.
     static let secondary = Color(hex: 0xC99A7B)

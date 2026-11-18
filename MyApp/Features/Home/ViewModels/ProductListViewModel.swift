@@ -3,7 +3,7 @@ import Observation
 
 /// The product catalog: loading, search, sort, and the groups shown on Home (best sellers, offers, categories).
 ///
-/// One shared instance lives in `AppDependencies`, so Home, Categories, and every product list
+/// One shared instance lives in `DependencyContainer`, so Home, Categories, and every product list
 /// use the same loaded catalog.
 @Observable
 @MainActor

@@ -57,7 +57,7 @@ struct ProductCollectionView: View {
 }
 
 #Preview {
-    let dependencies = AppDependencies.preview
+    let dependencies = DependencyContainer.preview
     NavigationStack {
         ProductCollectionView(catalog: dependencies.catalogViewModel, collection: .category(.skincare))
     }

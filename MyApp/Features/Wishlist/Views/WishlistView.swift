@@ -7,7 +7,7 @@ struct WishlistView: View {
     /// Takes the customer back to Home from the empty state.
     let onStartShopping: () -> Void
 
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
     @State private var toastMessage: String?
 
     var body: some View {
@@ -43,12 +43,12 @@ struct WishlistView: View {
 }
 
 #Preview("Saved Items") {
-    let dependencies = AppDependencies.preview
+    let dependencies = DependencyContainer.preview
     WishlistView(wishlist: dependencies.wishlistViewModel, onStartShopping: {})
         .environment(dependencies)
 }
 
 #Preview("Empty") {
     WishlistView(wishlist: WishlistViewModel(), onStartShopping: {})
-        .environment(AppDependencies.preview)
+        .environment(DependencyContainer.preview)
 }

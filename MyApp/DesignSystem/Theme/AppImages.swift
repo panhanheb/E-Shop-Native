@@ -42,6 +42,8 @@ enum AppImages {
     static let filter = "line.3.horizontal.decrease"
     static let sort = "arrow.up.arrow.down"
     static let arrowRight = "arrow.right"
+    static let chevronRight = "chevron.right"
+    static let coupon = "ticket"
     static let clear = "xmark.circle.fill"
     static let addToCart = "bag.badge.plus"
     static let favorite = "heart"

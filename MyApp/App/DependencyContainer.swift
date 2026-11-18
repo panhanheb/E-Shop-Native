@@ -4,7 +4,7 @@ import Observation
 /// Composition root: builds services once and creates view models with their dependencies.
 @Observable
 @MainActor
-final class AppDependencies {
+final class DependencyContainer {
     let authService: any AuthServiceProtocol
     let productService: any ProductServiceProtocol
     let orderService: any OrderServiceProtocol
@@ -53,17 +53,17 @@ final class AppDependencies {
     // MARK: - Factories
 
     /// Builds the container for `environment`.
-    static func make(for environment: AppEnvironment) -> AppDependencies {
+    static func make(for environment: AppEnvironment) -> DependencyContainer {
         environment.useMockServices
             ? mock(latency: environment.mockLatency)
             : live(baseURL: environment.baseURL)
     }
 
     /// Container backed by the REST API and Keychain.
-    static func live(baseURL: URL) -> AppDependencies {
+    static func live(baseURL: URL) -> DependencyContainer {
         let tokenStore = KeychainTokenStore()
         let apiClient = APIClient(baseURL: baseURL, tokenStore: tokenStore)
-        return AppDependencies(
+        return DependencyContainer(
             authService: AuthService(apiClient: apiClient),
             productService: ProductService(apiClient: apiClient),
             orderService: OrderService(apiClient: apiClient),
@@ -81,9 +81,9 @@ final class AppDependencies {
         settingsService: (any SettingsServiceProtocol)? = nil,
         cart: CartViewModel = CartViewModel(),
         wishlist: WishlistViewModel = WishlistViewModel()
-    ) -> AppDependencies {
+    ) -> DependencyContainer {
         let database = MockUserDatabase(signedInUser: signedInUser)
-        return AppDependencies(
+        return DependencyContainer(
             authService: MockAuthService(database: database, latency: latency),
             productService: MockProductService(latency: latency),
             orderService: MockOrderService(latency: latency),
@@ -97,7 +97,7 @@ final class AppDependencies {
     }
 
     /// Instant, signed-in mock container for SwiftUI previews, with items in the cart and wishlist.
-    static var preview: AppDependencies {
+    static var preview: DependencyContainer {
         mock(
             latency: .zero,
             signedInUser: .mock,

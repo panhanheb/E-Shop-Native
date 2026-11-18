@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// Products the customer has hearted. One shared instance lives in `AppDependencies`.
+/// Products the customer has hearted. One shared instance lives in `DependencyContainer`.
 @Observable
 @MainActor
 final class WishlistViewModel {

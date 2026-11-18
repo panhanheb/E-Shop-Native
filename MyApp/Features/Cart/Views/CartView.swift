@@ -9,7 +9,7 @@ struct CartView: View {
     /// Takes the customer back to shopping from the empty state.
     let onStartShopping: () -> Void
 
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
     @State private var isPresentingCheckout = false
     @State private var isConfirmingClear = false
 
@@ -108,10 +108,10 @@ struct CartView: View {
         ]),
         onStartShopping: {}
     )
-    .environment(AppDependencies.preview)
+    .environment(DependencyContainer.preview)
 }
 
 #Preview("Empty") {
     CartView(cart: CartViewModel(), onStartShopping: {})
-        .environment(AppDependencies.preview)
+        .environment(DependencyContainer.preview)
 }

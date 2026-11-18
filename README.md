@@ -12,7 +12,7 @@ A beauty e-commerce app for iOS 17+ built with SwiftUI, MVVM, and Swift 6 strict
 
 The **cart and checkout** (`Features/Cart`) open from the bag button on Home. Checkout takes a delivery address and a payment method (cash on delivery, KHQR, or card). **Settings** (theme, notifications, haptics, language) open from the Home menu or from Profile.
 
-Sign-in and registration are in `Features/Auth`. Prices are in USD (`AppCurrency`). Shipping is free from $50; below that it costs $2.50 (`ShippingPolicy`).
+Sign-in and registration are in `Features/Authentication`. Prices are in USD (`AppCurrency`). Shipping is free from $50; below that it costs $2.50 (`ShippingPolicy`).
 
 ## Architecture
 
@@ -23,7 +23,7 @@ Sign-in and registration are in `Features/Auth`. Prices are in USD (`AppCurrency
 | ViewModel | `@Observable @MainActor final class`. Holds `isLoading` / `errorMessage` / data and exposes `async` intents. |
 | Service | Protocol + REST implementation + in-memory mock. Injected through initializers. |
 
-`AppDependencies` (in `App/`) is the composition root: it builds services once and vends view models through factory methods. `SessionStore` owns auth state and the Keychain token. `ProductListViewModel` (the catalog), `CartViewModel`, and `WishlistViewModel` each have a single shared instance there, so every screen shows the same products, bag, and hearts.
+`DependencyContainer` (in `App/`) is the composition root: it builds services once and vends view models through factory methods. `SessionStore` owns auth state and the Keychain token. `ProductListViewModel` (the catalog), `CartViewModel`, and `WishlistViewModel` each have a single shared instance there, so every screen shows the same products, bag, and hearts.
 
 ## Backend
 

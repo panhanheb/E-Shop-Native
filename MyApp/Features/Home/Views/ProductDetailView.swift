@@ -3,7 +3,7 @@ import SwiftUI
 /// Product details with quantity selection and an add-to-cart button.
 struct ProductDetailView: View {
     @State private var viewModel: ProductDetailViewModel
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
 
     private var isFavorite: Bool {
         dependencies.wishlistViewModel.contains(viewModel.product)
@@ -141,7 +141,7 @@ struct ProductDetailView: View {
 }
 
 #Preview {
-    let dependencies = AppDependencies.preview
+    let dependencies = DependencyContainer.preview
     NavigationStack {
         ProductDetailView(viewModel: dependencies.makeProductDetailViewModel(product: .mock))
     }
@@ -149,7 +149,7 @@ struct ProductDetailView: View {
 }
 
 #Preview("Out of Stock") {
-    let dependencies = AppDependencies.preview
+    let dependencies = DependencyContainer.preview
     NavigationStack {
         ProductDetailView(viewModel: dependencies.makeProductDetailViewModel(product: .mockOutOfStock))
     }

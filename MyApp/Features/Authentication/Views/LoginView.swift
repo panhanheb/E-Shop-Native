@@ -3,7 +3,7 @@ import SwiftUI
 /// Sign-in screen with an email/password form and a link to registration.
 struct LoginView: View {
     @State private var viewModel: LoginViewModel
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
     @FocusState private var focusedField: Field?
 
     private enum Field: Hashable {
@@ -105,13 +105,13 @@ struct LoginView: View {
 }
 
 #Preview("English") {
-    let dependencies = AppDependencies.preview
+    let dependencies = DependencyContainer.preview
     LoginView(viewModel: dependencies.makeLoginViewModel())
         .environment(dependencies)
 }
 
 #Preview("Khmer") {
-    let dependencies = AppDependencies.preview
+    let dependencies = DependencyContainer.preview
     LoginView(viewModel: dependencies.makeLoginViewModel())
         .environment(dependencies)
         .environment(\.locale, Locale(identifier: "km"))

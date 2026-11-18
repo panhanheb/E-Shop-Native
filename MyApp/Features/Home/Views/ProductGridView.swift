@@ -28,5 +28,5 @@ struct ProductGridView: View {
         }
         .background(AppColors.background)
     }
-    .environment(AppDependencies.preview)
+    .environment(DependencyContainer.preview)
 }

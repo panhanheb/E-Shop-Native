@@ -4,7 +4,7 @@ import SwiftUI
 struct CategoriesView: View {
     /// Shared catalog.
     @Bindable var catalog: ProductListViewModel
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
 
     var body: some View {
         NavigationStack {
@@ -91,7 +91,7 @@ struct CategoriesView: View {
 }
 
 #Preview {
-    let dependencies = AppDependencies.preview
+    let dependencies = DependencyContainer.preview
     CategoriesView(catalog: dependencies.catalogViewModel)
         .environment(dependencies)
 }

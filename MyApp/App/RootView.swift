@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Switches between launch, authentication, and main content based on the session.
 struct RootView: View {
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(DependencyContainer.self) private var dependencies
 
     var body: some View {
         Group {
@@ -26,10 +26,10 @@ struct RootView: View {
 
 #Preview("Signed In") {
     RootView()
-        .environment(AppDependencies.preview)
+        .environment(DependencyContainer.preview)
 }
 
 #Preview("Signed Out") {
     RootView()
-        .environment(AppDependencies.mock(latency: .zero, settingsService: MockSettingsService()))
+        .environment(DependencyContainer.mock(latency: .zero, settingsService: MockSettingsService()))
 }
