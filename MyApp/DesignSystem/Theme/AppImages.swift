@@ -43,7 +43,6 @@ enum AppImages {
     static let sort = "arrow.up.arrow.down"
     static let arrowRight = "arrow.right"
     static let chevronRight = "chevron.right"
-    static let coupon = "ticket"
     static let clear = "xmark.circle.fill"
     static let addToCart = "bag.badge.plus"
     static let favorite = "heart"

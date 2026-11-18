@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Product card: edge-to-edge image with discount badge and wishlist heart, then name, rating,
-/// price (sale price with the original struck through), stock hint, and an animated add button.
+/// Product card: edge-to-edge image with a discount or free-delivery ribbon and wishlist heart,
+/// then price, name, tagline (or low-stock hint), and a round animated add button.
 struct ProductCardView: View {
     let product: Product
     let isFavorite: Bool
@@ -80,86 +80,77 @@ struct ProductCardView: View {
         .accessibilityIdentifier("product.favorite")
     }
 
+    /// Discount badge for sale items; otherwise a "Free Delivery" ribbon when this item alone
+    /// reaches the free-shipping threshold.
     @ViewBuilder
     private var discountBadge: some View {
         if isInStock, let discountPercent {
-            Text(verbatim: "-\(discountPercent)%")
-                .font(AppFont.captionEmphasized)
-                .foregroundStyle(AppColors.onPrimary)
-                .padding(.horizontal, AppSpacing.sm)
-                .padding(.vertical, AppSpacing.xxs + 1)
-                .background(AppColors.primary, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
-                .padding(AppSpacing.sm + AppSpacing.xxs)
+            ribbon(Text(verbatim: "-\(discountPercent)%"), systemImage: AppImages.offers, color: AppColors.primary)
+        } else if isInStock, product.price >= ShippingPolicy.freeShippingThreshold {
+            ribbon(Text("Free Delivery"), systemImage: "box.truck.fill", color: AppColors.info)
         }
+    }
+
+    private func ribbon(_ title: Text, systemImage: String, color: Color) -> some View {
+        HStack(spacing: AppSpacing.xs) {
+            Image(systemName: systemImage)
+                .font(.system(size: 9, weight: .bold))
+            title
+        }
+        .font(AppFont.captionEmphasized)
+        .foregroundStyle(AppColors.onPrimary)
+        .padding(.horizontal, AppSpacing.sm)
+        .padding(.vertical, AppSpacing.xs)
+        .background(color, in: UnevenRoundedRectangle(bottomTrailingRadius: AppRadius.small, topTrailingRadius: AppRadius.small, style: .continuous))
+        .padding(.top, AppSpacing.sm + AppSpacing.xxs)
     }
 
     // MARK: Info
 
     private var infoSection: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xs + AppSpacing.xxs) {
-            Text(product.name)
-                .font(AppFont.subheadline.weight(.semibold))
-                .foregroundStyle(AppColors.textPrimary)
-                .lineLimit(2, reservesSpace: true)
-                .multilineTextAlignment(.leading)
+        HStack(alignment: .center, spacing: AppSpacing.xs) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxs + 1) {
+                priceLine
 
-            compactRating
+                Text(product.name)
+                    .font(AppFont.subheadline.weight(.medium))
+                    .foregroundStyle(AppColors.textPrimary)
+                    .lineLimit(1)
 
-            HStack(alignment: .bottom, spacing: AppSpacing.xs) {
-                priceStack
-                Spacer(minLength: 0)
-                addButton
+                // Low stock replaces the tagline so every card keeps the same height.
+                Group {
+                    if isLowStock {
+                        Text("Only \(product.stock) left")
+                            .foregroundStyle(AppColors.warning)
+                    } else {
+                        Text(product.tagline)
+                            .foregroundStyle(AppColors.textSecondary)
+                    }
+                }
+                .font(AppFont.caption)
+                .lineLimit(1)
             }
 
-            stockHint
+            Spacer(minLength: 0)
+
+            addButton
         }
     }
 
-    private var compactRating: some View {
-        HStack(spacing: AppSpacing.xs) {
-            Image(systemName: AppImages.star)
-                .font(.system(size: 10))
-                .foregroundStyle(AppColors.star)
-            Text(product.rating, format: .number.precision(.fractionLength(1)))
-                .font(AppFont.captionEmphasized)
-                .foregroundStyle(AppColors.textPrimary)
-            Text("(\(product.reviewCount))")
-                .font(AppFont.caption)
-                .foregroundStyle(AppColors.textSecondary)
-            Text(verbatim: "·")
-                .foregroundStyle(AppColors.textTertiary)
-            Text(product.category.title)
-                .font(AppFont.caption)
-                .foregroundStyle(AppColors.textSecondary)
-                .lineLimit(1)
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Rated \(product.rating, specifier: "%.1f") out of 5, \(product.reviewCount) reviews"))
-    }
-
-    private var priceStack: some View {
-        VStack(alignment: .leading, spacing: 0) {
+    private var priceLine: some View {
+        HStack(alignment: .firstTextBaseline, spacing: AppSpacing.xs) {
+            Text(product.price, format: .currency(code: AppCurrency.code))
+                .font(AppFont.price)
+                .foregroundStyle(discountPercent != nil ? AppColors.primary : AppColors.textPrimary)
             if discountPercent != nil, let originalPrice = product.originalPrice {
                 Text(originalPrice, format: .currency(code: AppCurrency.code))
                     .font(.caption2)
                     .strikethrough()
                     .foregroundStyle(AppColors.textSecondary)
             }
-            Text(product.price, format: .currency(code: AppCurrency.code))
-                .font(AppFont.price)
-                .foregroundStyle(discountPercent != nil ? AppColors.primary : AppColors.textPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
         }
-    }
-
-    /// Always laid out (hidden when not low) so every card in a row has the same height.
-    private var stockHint: some View {
-        Text("Only \(product.stock) left")
-            .font(.caption2.weight(.semibold))
-            .foregroundStyle(AppColors.warning)
-            .opacity(isLowStock ? 1 : 0)
-            .accessibilityHidden(!isLowStock)
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
     }
 
     private var addButton: some View {
@@ -172,10 +163,10 @@ struct ProductCardView: View {
             }
         } label: {
             Image(systemName: justAdded ? "checkmark" : AppImages.add)
-                .font(.system(size: 15, weight: .bold))
+                .font(.system(size: 16, weight: .bold))
                 .contentTransition(.symbolEffect(.replace))
                 .foregroundStyle(AppColors.onPrimary)
-                .frame(width: 34, height: 34)
+                .frame(width: 38, height: 38)
                 .background(
                     isInStock ? (justAdded ? AppColors.success : AppColors.primary) : AppColors.textTertiary,
                     in: Circle()

@@ -43,12 +43,12 @@ enum HomePromotion: Int, CaseIterable, Identifiable {
 }
 
 extension HomePromotion {
-    /// Banner background, from top-leading to bottom-trailing.
-    var gradient: [Color] {
+    /// Accent for the banner's tint, tag, and button.
+    var accent: Color {
         switch self {
-        case .newArrivals: [AppColors.primary, Color(hex: 0x8E0F17)]
-        case .bestSellers: [Color(hex: 0x2B2F36), Color(hex: 0x111317)]
-        case .offers: [AppColors.accentPink, Color(hex: 0x9E1F4E)]
+        case .newArrivals: AppColors.primary
+        case .bestSellers: AppColors.accentAmber
+        case .offers: AppColors.accentPink
         }
     }
 }

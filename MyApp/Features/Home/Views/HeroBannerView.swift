@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// A single hero banner: tag, headline, subtitle, Shop Now button, and artwork on a bold gradient.
+/// A single hero banner: tag, headline, subtitle, and a Shop Now button on a soft tinted card,
+/// with product artwork on the right.
 struct HeroBannerView: View {
     let promotion: HomePromotion
     let onShopNow: () -> Void
@@ -8,50 +9,53 @@ struct HeroBannerView: View {
     var body: some View {
         ZStack(alignment: .leading) {
             LinearGradient(
-                colors: promotion.gradient,
+                colors: [promotion.accent.opacity(0.10), promotion.accent.opacity(0.22)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
+            .background(AppColors.surface)
 
-            // Soft glow behind the artwork.
-            Circle()
-                .fill(.white.opacity(0.12))
-                .frame(width: 220, height: 220)
-                .offset(x: 120, y: 30)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-
-            BeautyArtworkView(scale: 0.9)
+            BeautyArtworkView(scale: 0.85)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 .padding(.trailing, AppSpacing.lg)
                 .padding(.bottom, AppSpacing.md)
 
-            VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            VStack(alignment: .leading, spacing: AppSpacing.xs + AppSpacing.xxs) {
                 Text(promotion.tag)
-                    .font(.system(size: 10, weight: .bold))
-                    .kerning(0.8)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, AppSpacing.sm)
-                    .padding(.vertical, AppSpacing.xs)
-                    .background(.white.opacity(0.2), in: Capsule())
+                    .font(.system(size: 11, weight: .bold))
+                    .kerning(0.6)
+                    .foregroundStyle(promotion.accent)
 
                 Text(promotion.title)
-                    .font(AppFont.display)
-                    .foregroundStyle(.white)
+                    .font(AppFont.sectionTitle)
+                    .foregroundStyle(AppColors.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Text(promotion.subtitle)
                     .font(AppFont.caption)
-                    .foregroundStyle(.white.opacity(0.85))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .lineLimit(2)
 
-                ArrowPillButton(title: "Shop Now", action: onShopNow)
-                    .padding(.top, AppSpacing.xs)
-                    .accessibilityIdentifier("home.shopNow")
+                Button(action: onShopNow) {
+                    Text("Shop Now")
+                        .font(AppFont.subheadline.weight(.semibold))
+                        .foregroundStyle(AppColors.onPrimary)
+                        .padding(.horizontal, AppSpacing.md + AppSpacing.xs)
+                        .frame(height: 36)
+                        .background(promotion.accent, in: Capsule())
+                }
+                .buttonStyle(.pressable)
+                .padding(.top, AppSpacing.xs)
+                .accessibilityIdentifier("home.shopNow")
             }
-            .frame(maxWidth: 200, alignment: .leading)
+            .frame(maxWidth: 190, alignment: .leading)
             .padding(AppSpacing.lg)
         }
         .clipShape(RoundedRectangle(cornerRadius: AppRadius.xLarge, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: AppRadius.xLarge, style: .continuous)
+                .strokeBorder(AppColors.hairline, lineWidth: 0.5)
+        }
     }
 }
 
@@ -59,7 +63,7 @@ struct HeroBannerView: View {
     VStack {
         ForEach(HomePromotion.allCases) { promotion in
             HeroBannerView(promotion: promotion) {}
-                .frame(height: 200)
+                .frame(height: 190)
         }
     }
     .padding()

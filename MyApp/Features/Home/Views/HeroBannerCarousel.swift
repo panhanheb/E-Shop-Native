@@ -19,7 +19,7 @@ struct HeroBannerCarousel: View {
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height: 200)
+            .frame(height: 190)
 
             PageDots(count: HomePromotion.allCases.count, current: selection.rawValue)
         }
