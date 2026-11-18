@@ -5,21 +5,19 @@ import SwiftUI
 enum AppColors {
     // MARK: Brand
 
-    /// Main brand color: brand red (from `AccentColor` in the asset catalog).
+    /// Main brand color: red (from `AccentColor` in the asset catalog).
     static let primary = Color.accentColor
-    /// Secondary brand color: rose gold.
-    static let secondary = Color(hex: 0xC99A7B)
+    /// Very light tint of the brand color for chips, icon backgrounds, and highlighted rows.
+    static let primarySoft = Color("Blush")
     /// Content drawn on top of `primary` (button titles, avatar initials).
     static let onPrimary = Color.white
 
     // MARK: Backgrounds
 
-    /// Screen background: warm cream.
+    /// Screen background: neutral light gray (black in Dark Mode).
     static let background = Color("AppBackground")
     /// Cards, text fields, and other raised surfaces.
     static let surface = Color("AppSurface")
-    /// Pink-peach used for banners and category circles.
-    static let blush = Color("Blush")
 
     // MARK: Text
 
@@ -30,23 +28,25 @@ enum AppColors {
     // MARK: Lines and shadows
 
     static let border = Color(uiColor: .separator)
+    /// Hairline outline around cards and inputs.
+    static let hairline = Color(uiColor: .separator).opacity(0.5)
     /// Very soft shadow for floating cards.
-    static let shadow = Color.black.opacity(0.06)
+    static let shadow = Color.black.opacity(0.05)
 
     // MARK: Status
 
-    static let success = Color.green
-    static let warning = Color.orange
-    static let danger = Color.red
-    static let info = Color.blue
+    static let success = Color(hex: 0x1F9D55)
+    static let warning = Color(hex: 0xE8890C)
+    static let danger = Color(hex: 0xD92D20)
+    static let info = Color(hex: 0x2E6BE6)
     /// Rating stars.
     static let star = Color(hex: 0xF5A623)
 
-    // MARK: Beauty palette (category accents)
+    // MARK: Accents (category icons)
 
-    static let gold = Color(hex: 0xC9965B)
-    static let rose = Color(hex: 0xD8707E)
-    static let berry = Color(hex: 0xB0305A)
-    static let lilac = Color(hex: 0x9C89C9)
-    static let cocoa = Color(hex: 0x8D6E63)
+    static let accentAmber = Color(hex: 0xE8890C)
+    static let accentPink = Color(hex: 0xE0457B)
+    static let accentViolet = Color(hex: 0x7C5CD6)
+    static let accentTeal = Color(hex: 0x14A38B)
+    static let accentBlue = Color(hex: 0x2E6BE6)
 }

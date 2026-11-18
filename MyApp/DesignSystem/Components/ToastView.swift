@@ -10,14 +10,14 @@ struct ToastView: View {
                 .lineLimit(2)
         } icon: {
             Image(systemName: AppImages.success)
-                .foregroundStyle(AppColors.primary)
+                .foregroundStyle(AppColors.success)
         }
         .font(AppFont.callout.weight(.medium))
         .foregroundStyle(.white)
         .padding(.horizontal, AppSpacing.md)
         .padding(.vertical, AppSpacing.sm)
-        .background(Color.black.opacity(0.85), in: Capsule())
-        .shadow(color: AppColors.shadow, radius: 8, y: 4)
+        .background(Color(white: 0.12).opacity(0.95), in: Capsule())
+        .shadow(color: .black.opacity(0.15), radius: 12, y: 6)
         .accessibilityIdentifier("toast.message")
     }
 }

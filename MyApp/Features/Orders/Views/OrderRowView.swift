@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A row in the order history: number, date, item count, total, and status.
+/// A row in the order history: status icon, number, date and item count, total, and status badge.
 struct OrderRowView: View {
     /// The order to display.
     let order: Order
@@ -10,25 +10,23 @@ struct OrderRowView: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+        HStack(alignment: .center, spacing: AppSpacing.sm + AppSpacing.xs) {
+            IconTile(systemImage: order.status.systemImage, tint: order.status.color, size: 44)
+
+            VStack(alignment: .leading, spacing: AppSpacing.xxs + 1) {
                 Text(order.number)
                     .font(AppFont.headline)
-                Text(order.createdAt, format: .dateTime.day().month().year())
+                Text("\(order.createdAt.formatted(.dateTime.day().month().year())) · \(itemCount) items")
                     .font(AppFont.caption)
                     .foregroundStyle(AppColors.textSecondary)
-                Text("\(itemCount) items")
-                    .font(AppFont.caption)
-                    .foregroundStyle(AppColors.textSecondary)
-            }
-
-            Spacer()
-
-            VStack(alignment: .trailing, spacing: AppSpacing.xs) {
-                Text(order.total, format: .currency(code: AppCurrency.code))
-                    .font(AppFont.headline)
                 OrderStatusBadge(status: order.status)
+                    .padding(.top, AppSpacing.xxs)
             }
+
+            Spacer(minLength: AppSpacing.sm)
+
+            Text(order.total, format: .currency(code: AppCurrency.code))
+                .font(AppFont.price.monospacedDigit())
         }
         .padding(.vertical, AppSpacing.xs)
     }

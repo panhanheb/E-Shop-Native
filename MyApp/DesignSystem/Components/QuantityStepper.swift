@@ -14,34 +14,45 @@ struct QuantityStepper: View {
     let onIncrease: () -> Void
 
     var body: some View {
-        HStack(spacing: AppSpacing.sm) {
-            Button(action: onDecrease) {
-                Image(systemName: AppImages.remove)
-                    .frame(width: 32, height: 32)
-            }
-            .disabled(!canDecrease)
-            .accessibilityLabel("Decrease quantity")
+        HStack(spacing: 0) {
+            stepButton(AppImages.remove, isEnabled: canDecrease, action: onDecrease)
+                .accessibilityLabel("Decrease quantity")
 
             Text(quantity, format: .number)
                 .font(AppFont.headline)
                 .monospacedDigit()
-                .frame(minWidth: 28)
+                .contentTransition(.numericText(value: Double(quantity)))
+                .animation(.snappy, value: quantity)
+                .frame(minWidth: 32)
                 .accessibilityIdentifier("quantity.value")
 
-            Button(action: onIncrease) {
-                Image(systemName: AppImages.add)
-                    .frame(width: 32, height: 32)
-            }
-            .disabled(!canIncrease)
-            .accessibilityLabel("Increase quantity")
+            stepButton(AppImages.add, isEnabled: canIncrease, action: onIncrease)
+                .accessibilityLabel("Increase quantity")
+        }
+        .padding(AppSpacing.xxs)
+        .background(AppColors.surface, in: Capsule())
+        .overlay(Capsule().strokeBorder(AppColors.border.opacity(0.7), lineWidth: 1))
+        .sensoryFeedback(.selection, trigger: quantity)
+    }
+
+    private func stepButton(_ systemImage: String, isEnabled: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(isEnabled ? AppColors.primary : AppColors.textTertiary)
+                .frame(width: 32, height: 32)
+                .contentShape(Circle())
         }
         .buttonStyle(.borderless)
-        .padding(.horizontal, AppSpacing.xs)
-        .background(AppColors.background, in: Capsule())
+        .disabled(!isEnabled)
     }
 }
 
 #Preview {
-    QuantityStepper(quantity: 2, canDecrease: true, canIncrease: false, onDecrease: {}, onIncrease: {})
-        .padding()
+    VStack(spacing: AppSpacing.md) {
+        QuantityStepper(quantity: 2, onDecrease: {}, onIncrease: {})
+        QuantityStepper(quantity: 9, canDecrease: true, canIncrease: false, onDecrease: {}, onIncrease: {})
+    }
+    .padding()
+    .background(AppColors.background)
 }

@@ -1,17 +1,17 @@
 import SwiftUI
 
-/// Capsule badge showing an order's status.
+/// Capsule badge showing an order's status with its icon.
 struct OrderStatusBadge: View {
     /// The status to display.
     let status: OrderStatus
 
     var body: some View {
-        Text(status.title)
+        Label(status.title, systemImage: status.systemImage)
             .font(AppFont.captionEmphasized)
             .foregroundStyle(status.color)
-            .padding(.horizontal, AppSpacing.sm)
+            .padding(.horizontal, AppSpacing.sm + AppSpacing.xxs)
             .padding(.vertical, AppSpacing.xs)
-            .background(status.color.opacity(0.15), in: Capsule())
+            .background(status.color.opacity(0.12), in: Capsule())
     }
 }
 

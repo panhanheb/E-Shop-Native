@@ -9,11 +9,8 @@ struct ProductImageView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [AppColors.blush.opacity(0.55), AppColors.blush.opacity(0.2)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            AppColors.surface
+            product.category.tint.opacity(0.08)
 
             if let imageURL = product.imageURL {
                 AsyncImage(url: imageURL) { phase in
@@ -38,7 +35,6 @@ struct ProductImageView: View {
         Image(systemName: product.category.systemImage)
             .font(AppFont.icon(iconSize))
             .foregroundStyle(product.category.tint.gradient)
-            .shadow(color: product.category.tint.opacity(0.25), radius: 8, y: 4)
     }
 }
 

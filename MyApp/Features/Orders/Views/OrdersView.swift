@@ -12,6 +12,7 @@ struct OrdersView: View {
     var body: some View {
         NavigationStack {
             content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.background)
                 .navigationTitle("My Orders")
                 .navigationDestination(for: Order.self) { order in
@@ -46,6 +47,8 @@ struct OrdersView: View {
                     OrderRowView(order: order)
                 }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
             .refreshable { await viewModel.loadOrders() }
         }
     }

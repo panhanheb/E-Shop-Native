@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A cart line: thumbnail, name, unit price, quantity stepper, and line total.
+/// A cart line: thumbnail, name, tagline, unit price, quantity stepper, and line total.
 struct CartItemRow: View {
     let item: CartItem
     let lineTotal: Decimal
@@ -9,20 +9,22 @@ struct CartItemRow: View {
     let onDecrement: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: AppSpacing.md) {
-            ProductImageView(product: item.product, iconSize: AppFontSize.iconMedium)
-                .frame(width: 64, height: 64)
-                .clipShape(RoundedRectangle(cornerRadius: AppRadius.small))
+        HStack(alignment: .top, spacing: AppSpacing.sm + AppSpacing.xs) {
+            ProductImageView(product: item.product, iconSize: AppFontSize.iconMedium + 4)
+                .frame(width: 76, height: 76)
+                .clipShape(RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
 
-            VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 Text(item.product.name)
-                    .font(AppFont.callout)
+                    .font(AppFont.subheadline.weight(.semibold))
+                    .foregroundStyle(AppColors.textPrimary)
                     .lineLimit(2)
-                Text(item.product.price, format: .currency(code: AppCurrency.code))
+                Text(item.product.tagline)
                     .font(AppFont.caption)
                     .foregroundStyle(AppColors.textSecondary)
+                    .lineLimit(1)
 
-                HStack {
+                HStack(alignment: .center) {
                     QuantityStepper(
                         quantity: item.quantity,
                         canDecrease: true,
@@ -31,9 +33,17 @@ struct CartItemRow: View {
                         onIncrease: onIncrement
                     )
                     Spacer()
-                    Text(lineTotal, format: .currency(code: AppCurrency.code))
-                        .font(AppFont.headline)
+                    VStack(alignment: .trailing, spacing: 0) {
+                        Text(lineTotal, format: .currency(code: AppCurrency.code))
+                            .font(AppFont.price.monospacedDigit())
+                        if item.quantity > 1 {
+                            Text("\(item.product.price.formatted(.currency(code: AppCurrency.code))) each")
+                                .font(.caption2)
+                                .foregroundStyle(AppColors.textSecondary)
+                        }
+                    }
                 }
+                .padding(.top, AppSpacing.xxs)
             }
         }
         .padding(.vertical, AppSpacing.xs)

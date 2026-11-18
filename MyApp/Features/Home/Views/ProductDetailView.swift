@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Product details with quantity selection and an add-to-cart button.
+/// Product details: large image, name, rating, price and stock, description, and a sticky
+/// bottom bar with the quantity stepper, total, and Add to Cart.
 struct ProductDetailView: View {
     @State private var viewModel: ProductDetailViewModel
     @Environment(DependencyContainer.self) private var dependencies
@@ -16,26 +17,31 @@ struct ProductDetailView: View {
 
     private var product: Product { viewModel.product }
 
+    private var discountPercent: Int? {
+        guard let originalPrice = product.originalPrice, originalPrice > product.price, originalPrice > 0 else { return nil }
+        let fraction = (originalPrice - product.price) / originalPrice * 100
+        return Int(NSDecimalNumber(decimal: fraction).doubleValue.rounded())
+    }
+
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: AppSpacing.lg) {
-                ProductImageView(product: product, iconSize: AppFontSize.iconLarge * 1.5)
-                    .frame(height: 300)
-                    .clipShape(RoundedRectangle(cornerRadius: AppRadius.xLarge))
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                ProductImageView(product: product, iconSize: AppFontSize.iconLarge * 1.6)
+                    .frame(height: 320)
+                    .clipShape(RoundedRectangle(cornerRadius: AppRadius.xLarge, style: .continuous))
+                    .overlay(alignment: .topLeading) { discountBadge }
 
                 if let errorMessage = viewModel.errorMessage {
                     ErrorBanner(message: errorMessage)
                 }
 
                 header
-                Divider()
-                description
-                Divider()
-                purchaseSection
+                detailsCard
             }
             .padding(AppSpacing.md)
         }
         .background(AppColors.background)
+        .safeAreaInset(edge: .bottom) { purchaseBar }
         .navigationTitle(product.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -47,8 +53,10 @@ struct ProductDetailView: View {
                         dependencies.wishlistViewModel.toggle(viewModel.product)
                     } label: {
                         Image(systemName: isFavorite ? AppImages.favoriteFilled : AppImages.favorite)
-                            .foregroundStyle(isFavorite ? AppColors.rose : AppColors.textPrimary)
+                            .foregroundStyle(isFavorite ? AppColors.primary : AppColors.textPrimary)
+                            .contentTransition(.symbolEffect(.replace))
                     }
+                    .sensoryFeedback(.impact(weight: .light), trigger: isFavorite)
                     .accessibilityLabel(isFavorite ? Text("Remove from Wishlist") : Text("Add to Wishlist"))
                     .accessibilityIdentifier("productDetail.favorite")
                 }
@@ -63,56 +71,108 @@ struct ProductDetailView: View {
         }
     }
 
+    // MARK: Sections
+
+    @ViewBuilder
+    private var discountBadge: some View {
+        if viewModel.isInStock, let discountPercent {
+            Text("\(discountPercent)% OFF")
+                .font(AppFont.captionEmphasized)
+                .foregroundStyle(AppColors.onPrimary)
+                .padding(.horizontal, AppSpacing.sm + AppSpacing.xxs)
+                .padding(.vertical, AppSpacing.xs + AppSpacing.xxs)
+                .background(AppColors.primary, in: Capsule())
+                .padding(AppSpacing.md)
+        }
+    }
+
     private var header: some View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
-            Label(product.category.title, systemImage: product.category.systemImage)
-                .font(AppFont.caption)
-                .foregroundStyle(AppColors.textSecondary)
+            HStack(spacing: AppSpacing.sm) {
+                Label(product.category.title, systemImage: product.category.systemImage)
+                    .font(AppFont.captionEmphasized)
+                    .foregroundStyle(product.category.tint)
+                    .padding(.horizontal, AppSpacing.sm + AppSpacing.xxs)
+                    .padding(.vertical, AppSpacing.xs + AppSpacing.xxs)
+                    .background(product.category.tint.opacity(0.12), in: Capsule())
+                stockPill
+            }
+
             Text(product.name)
-                .font(AppFont.display)
+                .font(AppFont.title)
+                .foregroundStyle(AppColors.textPrimary)
+
             Text(product.tagline)
                 .font(AppFont.callout)
                 .foregroundStyle(AppColors.textSecondary)
-            RatingView(rating: product.rating, reviewCount: product.reviewCount, starSize: 13)
-            PriceText(product.price, originalPrice: product.originalPrice, font: AppFont.title)
-            stockLabel
+
+            HStack(spacing: AppSpacing.sm) {
+                RatingView(rating: product.rating, reviewCount: product.reviewCount, starSize: 13)
+                Text(product.rating, format: .number.precision(.fractionLength(1)))
+                    .font(AppFont.subheadline.weight(.semibold))
+            }
+
+            PriceText(product.price, originalPrice: product.originalPrice, font: Font.title.weight(.bold))
+                .padding(.top, AppSpacing.xs)
         }
     }
 
-    @ViewBuilder
-    private var stockLabel: some View {
-        if !viewModel.isInStock {
-            Text("Out of Stock")
-                .font(AppFont.callout)
-                .foregroundStyle(AppColors.danger)
+    private var stockPill: some View {
+        let (text, color): (LocalizedStringKey, Color) = if !viewModel.isInStock {
+            ("Out of Stock", AppColors.danger)
         } else if product.stock <= 10 {
-            Text("Only \(product.stock) left in stock")
-                .font(AppFont.callout)
-                .foregroundStyle(AppColors.warning)
+            ("Only \(product.stock) left", AppColors.warning)
         } else {
-            Text("In Stock")
-                .font(AppFont.callout)
-                .foregroundStyle(AppColors.success)
+            ("In Stock", AppColors.success)
+        }
+        return Label(text, systemImage: "circle.fill")
+            .labelStyle(StatusDotLabelStyle())
+            .font(AppFont.captionEmphasized)
+            .foregroundStyle(color)
+            .padding(.horizontal, AppSpacing.sm + AppSpacing.xxs)
+            .padding(.vertical, AppSpacing.xs + AppSpacing.xxs)
+            .background(color.opacity(0.12), in: Capsule())
+    }
+
+    private var detailsCard: some View {
+        CardView {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                    Text("Description")
+                        .font(AppFont.headline)
+                    Text(product.details)
+                        .font(AppFont.callout)
+                        .foregroundStyle(AppColors.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Divider()
+
+                HStack(spacing: AppSpacing.md) {
+                    perk(AppImages.orders, "Free delivery from \(ShippingPolicy.freeShippingThreshold, format: .currency(code: AppCurrency.code))")
+                    perk(AppImages.success, "100% authentic")
+                }
+            }
         }
     }
 
-    private var description: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.sm) {
-            Text("Description")
-                .font(AppFont.headline)
-            Text(product.details)
-                .font(AppFont.body)
+    private func perk(_ systemImage: String, _ title: LocalizedStringKey) -> some View {
+        HStack(spacing: AppSpacing.sm) {
+            IconTile(systemImage: systemImage, size: 32)
+            Text(title)
+                .font(AppFont.caption.weight(.medium))
                 .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var purchaseSection: some View {
-        VStack(spacing: AppSpacing.md) {
+    // MARK: Bottom bar
+
+    private var purchaseBar: some View {
+        VStack(spacing: AppSpacing.sm + AppSpacing.xxs) {
             if viewModel.isInStock {
                 HStack {
-                    Text("Quantity")
-                        .font(AppFont.headline)
-                    Spacer()
                     QuantityStepper(
                         quantity: viewModel.quantity,
                         canDecrease: viewModel.canDecreaseQuantity,
@@ -120,22 +180,44 @@ struct ProductDetailView: View {
                         onDecrease: { viewModel.decreaseQuantity() },
                         onIncrease: { viewModel.increaseQuantity() }
                     )
-                }
-
-                HStack {
-                    Text("Total")
-                        .font(AppFont.headline)
                     Spacer()
-                    Text(viewModel.totalPrice, format: .currency(code: AppCurrency.code))
-                        .font(AppFont.headline)
+                    VStack(alignment: .trailing, spacing: 0) {
+                        Text("Total")
+                            .font(AppFont.caption)
+                            .foregroundStyle(AppColors.textSecondary)
+                        Text(viewModel.totalPrice, format: .currency(code: AppCurrency.code))
+                            .font(AppFont.title.monospacedDigit())
+                            .contentTransition(.numericText())
+                            .animation(.snappy, value: viewModel.totalPrice)
+                    }
+                    .accessibilityElement(children: .combine)
                 }
             }
 
-            PrimaryButton(viewModel.isInStock ? "Add to Cart" : "Out of Stock") {
+            PrimaryButton(
+                viewModel.isInStock ? "Add to Cart" : "Out of Stock",
+                systemImage: viewModel.isInStock ? AppImages.addToCart : nil
+            ) {
                 viewModel.addToCart()
             }
             .disabled(!viewModel.isInStock)
             .accessibilityIdentifier("productDetail.addToCart")
+        }
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.top, AppSpacing.sm + AppSpacing.xxs)
+        .padding(.bottom, AppSpacing.sm)
+        .background(.bar)
+        .overlay(alignment: .top) { Divider() }
+    }
+}
+
+/// Small colored dot followed by the title, for status pills.
+private struct StatusDotLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: AppSpacing.xs + AppSpacing.xxs) {
+            configuration.icon
+                .font(.system(size: 6))
+            configuration.title
         }
     }
 }

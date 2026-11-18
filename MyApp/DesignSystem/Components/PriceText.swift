@@ -21,7 +21,7 @@ struct PriceText: View {
         HStack(alignment: .firstTextBaseline, spacing: AppSpacing.xs) {
             Text(price, format: .currency(code: AppCurrency.code))
                 .font(font)
-                .foregroundStyle(originalPrice.map { $0 > price } == true ? AppColors.danger : AppColors.textPrimary)
+                .foregroundStyle(originalPrice.map { $0 > price } == true ? AppColors.primary : AppColors.textPrimary)
 
             if let originalPrice, originalPrice > price {
                 Text(originalPrice, format: .currency(code: AppCurrency.code))

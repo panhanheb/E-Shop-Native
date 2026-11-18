@@ -19,13 +19,13 @@ struct RegisterView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: AppSpacing.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.lg) {
                 header
                 form
 
                 if let validationMessage = viewModel.validationMessage {
-                    Text(validationMessage)
-                        .font(AppFont.caption)
+                    Label(validationMessage, systemImage: "info.circle")
+                        .font(AppFont.footnote)
                         .foregroundStyle(AppColors.danger)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -37,19 +37,25 @@ struct RegisterView: View {
                 PrimaryButton("Create Account", isLoading: viewModel.isLoading) { submit() }
                     .disabled(!viewModel.canSubmit)
                     .accessibilityIdentifier("register.submit")
+
+                Text("By creating an account, you agree to our Terms of Service and Privacy Policy.")
+                    .font(AppFont.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
             }
             .padding(AppSpacing.lg)
         }
         .scrollDismissesKeyboard(.interactively)
         .background(AppColors.background)
-        .navigationTitle("Register")
         .navigationBarTitleDisplayMode(.inline)
     }
 
     private var header: some View {
-        VStack(spacing: AppSpacing.sm) {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("Create Account")
                 .font(AppFont.largeTitle)
+                .foregroundStyle(AppColors.textPrimary)
             Text("Create an account to shop and track your orders.")
                 .font(AppFont.callout)
                 .foregroundStyle(AppColors.textSecondary)
@@ -58,13 +64,20 @@ struct RegisterView: View {
 
     private var form: some View {
         VStack(spacing: AppSpacing.md) {
-            AppTextField("Full Name", text: $viewModel.name, systemImage: AppImages.person, textContentType: .name)
-                .focused($focusedField, equals: .name)
-                .submitLabel(.next)
-                .onSubmit { focusedField = .email }
+            AppTextField(
+                "Your full name",
+                label: "Full Name",
+                text: $viewModel.name,
+                systemImage: AppImages.person,
+                textContentType: .name
+            )
+            .focused($focusedField, equals: .name)
+            .submitLabel(.next)
+            .onSubmit { focusedField = .email }
 
             AppTextField(
-                "Email",
+                "you@example.com",
+                label: "Email",
                 text: $viewModel.email,
                 systemImage: AppImages.email,
                 keyboardType: .emailAddress,
@@ -75,7 +88,8 @@ struct RegisterView: View {
             .onSubmit { focusedField = .password }
 
             AppTextField(
-                "Password",
+                "At least \(RegisterRequest.minimumPasswordLength) characters",
+                label: "Password",
                 text: $viewModel.password,
                 systemImage: AppImages.password,
                 isSecure: true,
@@ -86,7 +100,8 @@ struct RegisterView: View {
             .onSubmit { focusedField = .confirmPassword }
 
             AppTextField(
-                "Confirm Password",
+                "Re-enter your password",
+                label: "Confirm Password",
                 text: $viewModel.confirmPassword,
                 systemImage: AppImages.confirmPassword,
                 isSecure: true,

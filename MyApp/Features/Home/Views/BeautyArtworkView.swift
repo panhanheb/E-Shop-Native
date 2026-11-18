@@ -91,5 +91,5 @@ struct BeautyArtworkView: View {
 #Preview {
     BeautyArtworkView()
         .frame(width: 200, height: 180)
-        .background(AppColors.blush)
+        .background(AppColors.primarySoft)
 }

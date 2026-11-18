@@ -23,3 +23,19 @@ extension OrderStatus {
         }
     }
 }
+
+extension OrderStatus {
+    /// SF Symbol for badges and the progress tracker.
+    var systemImage: String {
+        switch self {
+        case .pending: "clock"
+        case .processing: "shippingbox"
+        case .shipped: "truck.box"
+        case .delivered: "checkmark.circle"
+        case .cancelled: "xmark.circle"
+        }
+    }
+
+    /// Steps shown in the order progress tracker, in order. Cancelled orders don't use the tracker.
+    static let trackedSteps: [OrderStatus] = [.pending, .processing, .shipped, .delivered]
+}

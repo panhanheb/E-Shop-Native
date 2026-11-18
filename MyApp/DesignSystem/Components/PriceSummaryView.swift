@@ -7,27 +7,46 @@ struct PriceSummaryView: View {
     let total: Decimal
 
     var body: some View {
-        VStack(spacing: AppSpacing.sm) {
-            LabeledContent("Subtotal") {
+        VStack(spacing: AppSpacing.sm + AppSpacing.xxs) {
+            row("Subtotal") {
                 Text(subtotal, format: .currency(code: AppCurrency.code))
             }
-            LabeledContent("Shipping") {
+            row("Shipping") {
                 if shippingFee == 0 {
                     Text("Free")
+                        .fontWeight(.semibold)
                         .foregroundStyle(AppColors.success)
                 } else {
                     Text(shippingFee, format: .currency(code: AppCurrency.code))
                 }
             }
+
             Divider()
-            LabeledContent("Total") {
-                Text(total, format: .currency(code: AppCurrency.code))
+                .padding(.vertical, AppSpacing.xxs)
+
+            HStack {
+                Text("Total")
                     .font(AppFont.headline)
+                Spacer()
+                Text(total, format: .currency(code: AppCurrency.code))
+                    .font(AppFont.title.monospacedDigit())
                     .foregroundStyle(AppColors.textPrimary)
             }
-            .font(AppFont.headline)
+            .accessibilityElement(children: .combine)
         }
-        .font(AppFont.callout)
+    }
+
+    private func row<Value: View>(_ title: LocalizedStringKey, @ViewBuilder value: () -> Value) -> some View {
+        HStack {
+            Text(title)
+                .foregroundStyle(AppColors.textSecondary)
+            Spacer()
+            value()
+                .monospacedDigit()
+                .foregroundStyle(AppColors.textPrimary)
+        }
+        .font(AppFont.subheadline)
+        .accessibilityElement(children: .combine)
     }
 }
 

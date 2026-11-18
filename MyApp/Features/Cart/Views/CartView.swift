@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// The shopping cart with quantity controls, totals, and a checkout button.
+/// The shopping cart: free-shipping progress, item rows with quantity controls, totals,
+/// and a sticky bar with the total and Checkout button.
 struct CartView: View {
     /// Shared app-wide cart.
     let cart: CartViewModel
@@ -29,8 +30,10 @@ struct CartView: View {
                     cartList
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.background)
-            .navigationTitle("Cart")
+            .navigationTitle(cart.isEmpty ? Text("Cart") : Text("Cart (\(cart.itemCount))"))
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if let onClose {
                     ToolbarItem(placement: .cancellationAction) {
@@ -43,6 +46,7 @@ struct CartView: View {
                         Button("Clear", role: .destructive) {
                             isConfirmingClear = true
                         }
+                        .tint(AppColors.danger)
                     }
                 }
             }
@@ -62,6 +66,10 @@ struct CartView: View {
     private var cartList: some View {
         List {
             Section {
+                freeShippingMeter
+            }
+
+            Section {
                 ForEach(cart.items) { item in
                     CartItemRow(
                         item: item,
@@ -78,25 +86,68 @@ struct CartView: View {
                         }
                     }
                 }
+            } footer: {
+                Text("Swipe left on an item to remove it.")
             }
 
-            Section {
-                if let remaining = cart.amountUntilFreeShipping {
-                    Text("Add \(remaining.formatted(.currency(code: AppCurrency.code))) more for free shipping.")
-                        .font(AppFont.callout)
-                        .foregroundStyle(AppColors.info)
-                }
+            Section("Order Summary") {
                 PriceSummaryView(subtotal: cart.subtotal, shippingFee: cart.shippingFee, total: cart.total)
+                    .padding(.vertical, AppSpacing.xs)
             }
         }
-        .safeAreaInset(edge: .bottom) {
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .safeAreaInset(edge: .bottom) { checkoutBar }
+    }
+
+    /// Progress toward free shipping, or a confirmation once it's reached.
+    private var freeShippingMeter: some View {
+        let threshold = NSDecimalNumber(decimal: ShippingPolicy.freeShippingThreshold).doubleValue
+        let subtotal = NSDecimalNumber(decimal: cart.subtotal).doubleValue
+        return VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            HStack(spacing: AppSpacing.sm) {
+                IconTile(
+                    systemImage: AppImages.orders,
+                    tint: cart.amountUntilFreeShipping == nil ? AppColors.success : AppColors.primary,
+                    size: 32
+                )
+                if let remaining = cart.amountUntilFreeShipping {
+                    Text("Add **\(remaining.formatted(.currency(code: AppCurrency.code)))** more for free shipping")
+                } else {
+                    Text("You've unlocked **free shipping**")
+                }
+            }
+            .font(AppFont.subheadline)
+
+            ProgressView(value: min(subtotal, threshold), total: threshold)
+                .tint(cart.amountUntilFreeShipping == nil ? AppColors.success : AppColors.primary)
+                .animation(.easeInOut, value: subtotal)
+        }
+        .padding(.vertical, AppSpacing.xs)
+    }
+
+    private var checkoutBar: some View {
+        HStack(spacing: AppSpacing.md) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Total")
+                    .font(AppFont.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                Text(cart.total, format: .currency(code: AppCurrency.code))
+                    .font(AppFont.title.monospacedDigit())
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: cart.total)
+            }
+            .accessibilityElement(children: .combine)
+
             PrimaryButton("Checkout") {
                 isPresentingCheckout = true
             }
             .accessibilityIdentifier("cart.checkout")
-            .padding(AppSpacing.md)
-            .background(.bar)
         }
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.sm + AppSpacing.xxs)
+        .background(.bar)
+        .overlay(alignment: .top) { Divider() }
     }
 }
 

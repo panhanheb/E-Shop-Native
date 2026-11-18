@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Product card: image with badges and wishlist heart, category, name, rating,
-/// sale price with the original struck through, stock hint, and an animated add button.
+/// Product card: edge-to-edge image with discount badge and wishlist heart, then name, rating,
+/// price (sale price with the original struck through), stock hint, and an animated add button.
 struct ProductCardView: View {
     let product: Product
     let isFavorite: Bool
@@ -27,16 +27,10 @@ struct ProductCardView: View {
         VStack(alignment: .leading, spacing: 0) {
             imageSection
             infoSection
-                .padding(.horizontal, AppSpacing.sm + AppSpacing.xxs)
-                .padding(.top, AppSpacing.sm)
-                .padding(.bottom, AppSpacing.sm + AppSpacing.xxs)
+                .padding(AppSpacing.sm + AppSpacing.xxs)
         }
-        .background(AppColors.surface, in: RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous)
-                .strokeBorder(AppColors.border.opacity(0.35), lineWidth: 0.5)
-        }
-        .shadow(color: AppColors.shadow, radius: 10, y: 4)
+        .clipShape(RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous))
+        .cardStyle()
         .contentShape(RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous))
     }
 
@@ -47,23 +41,21 @@ struct ProductCardView: View {
             .aspectRatio(1, contentMode: .fit)
             .saturation(isInStock ? 1 : 0)
             .overlay { if !isInStock { soldOutOverlay } }
-            .clipShape(RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
             .overlay(alignment: .topTrailing) { favoriteButton }
             .overlay(alignment: .topLeading) { discountBadge }
-            .padding(AppSpacing.xs + AppSpacing.xxs)
     }
 
     private var soldOutOverlay: some View {
         ZStack {
-            Color.black.opacity(0.25)
+            Color.black.opacity(0.2)
             Text("Sold Out")
                 .font(AppFont.captionEmphasized)
                 .textCase(.uppercase)
                 .tracking(1)
                 .foregroundStyle(AppColors.onPrimary)
-                .padding(.horizontal, AppSpacing.sm)
+                .padding(.horizontal, AppSpacing.sm + AppSpacing.xxs)
                 .padding(.vertical, AppSpacing.xs)
-                .background(.black.opacity(0.55), in: Capsule())
+                .background(.black.opacity(0.6), in: Capsule())
         }
     }
 
@@ -74,14 +66,16 @@ struct ProductCardView: View {
         } label: {
             Image(systemName: isFavorite ? AppImages.favoriteFilled : AppImages.favorite)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(isFavorite ? AppColors.rose : AppColors.textPrimary)
+                .foregroundStyle(isFavorite ? AppColors.primary : AppColors.textSecondary)
                 .symbolEffect(.bounce, value: heartBounce)
                 .frame(width: 32, height: 32)
-                .background(.ultraThinMaterial, in: Circle())
+                .background(AppColors.surface, in: Circle())
+                .shadow(color: .black.opacity(0.08), radius: 4, y: 1)
                 .padding(AppSpacing.sm)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.borderless)
+        .sensoryFeedback(.impact(weight: .light), trigger: heartBounce)
         .accessibilityLabel(isFavorite ? Text("Remove from Wishlist") : Text("Add to Wishlist"))
         .accessibilityIdentifier("product.favorite")
     }
@@ -94,24 +88,17 @@ struct ProductCardView: View {
                 .foregroundStyle(AppColors.onPrimary)
                 .padding(.horizontal, AppSpacing.sm)
                 .padding(.vertical, AppSpacing.xxs + 1)
-                .background(AppColors.berry.gradient, in: Capsule())
-                .padding(AppSpacing.sm)
+                .background(AppColors.primary, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                .padding(AppSpacing.sm + AppSpacing.xxs)
         }
     }
 
     // MARK: Info
 
     private var infoSection: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xs) {
-            Text(product.category.title)
-                .font(.caption2.weight(.semibold))
-                .textCase(.uppercase)
-                .tracking(0.6)
-                .foregroundStyle(product.category.tint)
-                .lineLimit(1)
-
+        VStack(alignment: .leading, spacing: AppSpacing.xs + AppSpacing.xxs) {
             Text(product.name)
-                .font(AppFont.callout.weight(.semibold))
+                .font(AppFont.subheadline.weight(.semibold))
                 .foregroundStyle(AppColors.textPrimary)
                 .lineLimit(2, reservesSpace: true)
                 .multilineTextAlignment(.leading)
@@ -123,7 +110,6 @@ struct ProductCardView: View {
                 Spacer(minLength: 0)
                 addButton
             }
-            .padding(.top, AppSpacing.xxs)
 
             stockHint
         }
@@ -140,6 +126,12 @@ struct ProductCardView: View {
             Text("(\(product.reviewCount))")
                 .font(AppFont.caption)
                 .foregroundStyle(AppColors.textSecondary)
+            Text(verbatim: "·")
+                .foregroundStyle(AppColors.textTertiary)
+            Text(product.category.title)
+                .font(AppFont.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .lineLimit(1)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Rated \(product.rating, specifier: "%.1f") out of 5, \(product.reviewCount) reviews"))
@@ -154,8 +146,8 @@ struct ProductCardView: View {
                     .foregroundStyle(AppColors.textSecondary)
             }
             Text(product.price, format: .currency(code: AppCurrency.code))
-                .font(AppFont.headline)
-                .foregroundStyle(discountPercent != nil ? AppColors.berry : AppColors.textPrimary)
+                .font(AppFont.price)
+                .foregroundStyle(discountPercent != nil ? AppColors.primary : AppColors.textPrimary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
         }
@@ -163,16 +155,11 @@ struct ProductCardView: View {
 
     /// Always laid out (hidden when not low) so every card in a row has the same height.
     private var stockHint: some View {
-        Label {
-            Text("Only \(product.stock) left")
-        } icon: {
-            Image(systemName: "flame.fill")
-        }
-        .font(.caption2.weight(.medium))
-        .foregroundStyle(AppColors.warning)
-        .labelStyle(.titleAndIcon)
-        .opacity(isLowStock ? 1 : 0)
-        .accessibilityHidden(!isLowStock)
+        Text("Only \(product.stock) left")
+            .font(.caption2.weight(.semibold))
+            .foregroundStyle(AppColors.warning)
+            .opacity(isLowStock ? 1 : 0)
+            .accessibilityHidden(!isLowStock)
     }
 
     private var addButton: some View {
@@ -184,16 +171,15 @@ struct ProductCardView: View {
                 withAnimation(.spring(duration: 0.3)) { justAdded = false }
             }
         } label: {
-            Image(systemName: justAdded ? "checkmark" : AppImages.addToCart)
-                .font(.system(size: 14, weight: .semibold))
+            Image(systemName: justAdded ? "checkmark" : AppImages.add)
+                .font(.system(size: 15, weight: .bold))
                 .contentTransition(.symbolEffect(.replace))
                 .foregroundStyle(AppColors.onPrimary)
-                .frame(width: 36, height: 36)
+                .frame(width: 34, height: 34)
                 .background(
                     isInStock ? (justAdded ? AppColors.success : AppColors.primary) : AppColors.textTertiary,
-                    in: RoundedRectangle(cornerRadius: AppRadius.small + 2, style: .continuous)
+                    in: Circle()
                 )
-                .shadow(color: isInStock ? AppColors.primary.opacity(0.3) : .clear, radius: 6, y: 3)
         }
         .buttonStyle(.borderless)
         .disabled(!isInStock || justAdded)

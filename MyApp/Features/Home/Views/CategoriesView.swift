@@ -32,7 +32,7 @@ struct CategoriesView: View {
             LoadingView(message: "Loading products…")
         } else {
             ScrollView {
-                VStack(spacing: AppSpacing.md) {
+                VStack(spacing: AppSpacing.sm + AppSpacing.xs) {
                     ForEach(ProductCategory.allCases) { category in
                         NavigationLink(value: ProductCollection.category(category)) {
                             row(
@@ -42,7 +42,7 @@ struct CategoriesView: View {
                                 count: catalog.productCount(in: category)
                             )
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.pressable)
                     }
 
                     NavigationLink(value: ProductCollection.offers) {
@@ -53,7 +53,7 @@ struct CategoriesView: View {
                             count: catalog.offers.count
                         )
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                 }
                 .padding(AppSpacing.md)
             }
@@ -63,30 +63,25 @@ struct CategoriesView: View {
 
     private func row(title: LocalizedStringKey, systemImage: String, tint: Color, count: Int) -> some View {
         HStack(spacing: AppSpacing.md) {
-            Image(systemName: systemImage)
-                .font(.system(size: 22, weight: .medium))
-                .foregroundStyle(tint.gradient)
-                .frame(width: 56, height: 56)
-                .background(AppColors.blush, in: Circle())
+            IconTile(systemImage: systemImage, tint: tint, size: 52)
 
             VStack(alignment: .leading, spacing: AppSpacing.xxs) {
                 Text(title)
                     .font(AppFont.headline)
                     .foregroundStyle(AppColors.textPrimary)
                 Text("\(count) products")
-                    .font(AppFont.caption)
+                    .font(AppFont.subheadline)
                     .foregroundStyle(AppColors.textSecondary)
             }
 
             Spacer()
 
-            Image(systemName: AppImages.arrowRight)
+            Image(systemName: AppImages.chevronRight)
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(AppColors.textSecondary)
+                .foregroundStyle(AppColors.textTertiary)
         }
-        .padding(AppSpacing.md)
-        .background(AppColors.surface, in: RoundedRectangle(cornerRadius: AppRadius.large))
-        .shadow(color: AppColors.shadow, radius: 6, y: 2)
+        .padding(AppSpacing.sm + AppSpacing.xs)
+        .cardStyle()
     }
 }
 

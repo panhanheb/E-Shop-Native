@@ -250,7 +250,7 @@ struct HomeView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.xs) {
-            HomeSectionTitle(title: title, destination: destination)
+            SectionHeaderView(title: title, destination: destination)
                 .padding(.horizontal, AppSpacing.md)
             content()
         }

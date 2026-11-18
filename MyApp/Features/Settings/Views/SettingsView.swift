@@ -50,8 +50,12 @@ struct SettingsView: View {
             }
 
             Section {
-                Toggle("Notifications", isOn: $viewModel.notificationsEnabled)
-                Toggle("Haptic Feedback", isOn: $viewModel.hapticsEnabled)
+                Toggle(isOn: $viewModel.notificationsEnabled) {
+                    rowLabel("Notifications", systemImage: AppImages.notifications, tint: AppColors.accentAmber)
+                }
+                Toggle(isOn: $viewModel.hapticsEnabled) {
+                    rowLabel("Haptic Feedback", systemImage: "iphone.radiowaves.left.and.right", tint: AppColors.accentViolet)
+                }
             } header: {
                 Text("Preferences")
             } footer: {
@@ -65,22 +69,49 @@ struct SettingsView: View {
                     }
                 } label: {
                     LabeledContent {
-                        Text(currentLanguageName)
+                        HStack(spacing: AppSpacing.xs) {
+                            Text(currentLanguageName)
+                            Image(systemName: "arrow.up.right")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(AppColors.textTertiary)
+                        }
                     } label: {
-                        Label("Language", systemImage: AppImages.language)
+                        rowLabel("Language", systemImage: AppImages.language, tint: AppColors.accentBlue)
                     }
                 }
+                .foregroundStyle(AppColors.textPrimary)
                 .accessibilityIdentifier("settings.language")
             } footer: {
                 Text("Opens iOS Settings, where you can choose English or Khmer for this app.")
             }
 
             Section("About") {
-                LabeledContent("Version", value: viewModel.appVersion)
-                Link(destination: Self.privacyPolicyURL) {
-                    Label("Privacy Policy", systemImage: AppImages.privacy)
+                LabeledContent {
+                    Text(viewModel.appVersion)
+                } label: {
+                    rowLabel("Version", systemImage: "info.circle", tint: AppColors.textSecondary)
                 }
+                Link(destination: Self.privacyPolicyURL) {
+                    LabeledContent {
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(AppColors.textTertiary)
+                    } label: {
+                        rowLabel("Privacy Policy", systemImage: AppImages.privacy, tint: AppColors.accentTeal)
+                    }
+                }
+                .foregroundStyle(AppColors.textPrimary)
             }
+        }
+        .scrollContentBackground(.hidden)
+        .background(AppColors.background)
+    }
+
+    /// Settings-style row: tinted icon tile followed by the title.
+    private func rowLabel(_ title: LocalizedStringKey, systemImage: String, tint: Color) -> some View {
+        HStack(spacing: AppSpacing.sm + AppSpacing.xxs) {
+            IconTile(systemImage: systemImage, tint: tint, size: 30)
+            Text(title)
         }
     }
 }

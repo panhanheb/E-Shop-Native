@@ -19,7 +19,7 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: AppSpacing.lg) {
+                VStack(alignment: .leading, spacing: AppSpacing.lg) {
                     header
                     form
 
@@ -31,34 +31,35 @@ struct LoginView: View {
                         .disabled(!viewModel.canSubmit)
                         .accessibilityIdentifier("login.submit")
 
-                    NavigationLink("Don't have an account? Create one") {
-                        RegisterView(viewModel: dependencies.makeRegisterViewModel())
-                    }
-                    .font(AppFont.callout)
-
                     if dependencies.isUsingMockServices {
-                        demoHint
+                        demoAccountCard
                     }
                 }
-                .padding(AppSpacing.lg)
+                .padding(.horizontal, AppSpacing.lg)
+                .padding(.bottom, AppSpacing.lg)
             }
             .scrollDismissesKeyboard(.interactively)
             .background(AppColors.background)
+            .safeAreaInset(edge: .bottom) { registerLink }
         }
     }
 
     private var header: some View {
-        VStack(spacing: AppSpacing.sm) {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
             Image(AppImages.logo)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 180, height: 180)
+                .frame(width: 88, height: 88)
                 .accessibilityHidden(true)
-            Text("Welcome Back")
-                .font(AppFont.largeTitle)
-            Text("Sign in to start shopping.")
-                .font(AppFont.callout)
-                .foregroundStyle(AppColors.textSecondary)
+
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                Text("Welcome Back")
+                    .font(AppFont.largeTitle)
+                    .foregroundStyle(AppColors.textPrimary)
+                Text("Sign in to start shopping.")
+                    .font(AppFont.callout)
+                    .foregroundStyle(AppColors.textSecondary)
+            }
         }
         .padding(.top, AppSpacing.xl)
     }
@@ -66,7 +67,8 @@ struct LoginView: View {
     private var form: some View {
         VStack(spacing: AppSpacing.md) {
             AppTextField(
-                "Email",
+                "you@example.com",
+                label: "Email",
                 text: $viewModel.email,
                 systemImage: AppImages.email,
                 keyboardType: .emailAddress,
@@ -78,7 +80,8 @@ struct LoginView: View {
             .onSubmit { focusedField = .password }
 
             AppTextField(
-                "Password",
+                "Enter your password",
+                label: "Password",
                 text: $viewModel.password,
                 systemImage: AppImages.password,
                 isSecure: true,
@@ -91,11 +94,50 @@ struct LoginView: View {
         }
     }
 
-    private var demoHint: some View {
-        Text("Demo account: \(MockUserDatabase.demoEmail) / \(MockUserDatabase.demoPassword)")
-            .font(AppFont.caption)
-            .foregroundStyle(AppColors.textSecondary)
-            .multilineTextAlignment(.center)
+    /// Mock backend only: shows the demo credentials and fills them in on tap.
+    private var demoAccountCard: some View {
+        Button {
+            viewModel.email = MockUserDatabase.demoEmail
+            viewModel.password = MockUserDatabase.demoPassword
+        } label: {
+            HStack(spacing: AppSpacing.sm + AppSpacing.xxs) {
+                IconTile(systemImage: "person.badge.key", tint: AppColors.info)
+                VStack(alignment: .leading, spacing: AppSpacing.xxs) {
+                    Text("Use Demo Account")
+                        .font(AppFont.subheadline.weight(.semibold))
+                        .foregroundStyle(AppColors.textPrimary)
+                    Text(verbatim: "\(MockUserDatabase.demoEmail) · \(MockUserDatabase.demoPassword)")
+                        .font(AppFont.caption)
+                        .foregroundStyle(AppColors.textSecondary)
+                }
+                Spacer()
+                Image(systemName: AppImages.chevronRight)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(AppColors.textTertiary)
+            }
+            .padding(AppSpacing.sm + AppSpacing.xs)
+            .cardStyle(cornerRadius: AppRadius.medium, hasShadow: false)
+        }
+        .buttonStyle(.pressable)
+        .accessibilityHint(Text("Fills in the demo email and password"))
+    }
+
+    private var registerLink: some View {
+        HStack(spacing: AppSpacing.xs) {
+            Text("Don't have an account?")
+                .foregroundStyle(AppColors.textSecondary)
+            NavigationLink {
+                RegisterView(viewModel: dependencies.makeRegisterViewModel())
+            } label: {
+                Text("Create One")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(AppColors.primary)
+            }
+        }
+        .font(AppFont.callout)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, AppSpacing.md)
+        .background(AppColors.background)
     }
 
     private func submit() {

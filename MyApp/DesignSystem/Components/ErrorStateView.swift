@@ -23,6 +23,8 @@ struct ErrorStateView: View {
             if let retryAction {
                 Button("Try Again", action: retryAction)
                     .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
+                    .controlSize(.large)
             }
         }
     }

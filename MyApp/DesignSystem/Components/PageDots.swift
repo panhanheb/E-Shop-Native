@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Carousel position indicator: the current page is a wide orange capsule.
+/// Carousel position indicator: the current page is a wide brand-colored capsule.
 struct PageDots: View {
     let count: Int
     let current: Int

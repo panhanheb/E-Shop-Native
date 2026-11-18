@@ -1,10 +1,14 @@
 import SwiftUI
 
-/// Shows the signed-in user's profile with edit and sign-out actions.
+/// The signed-in user's profile: header with avatar, quick stats, an account menu, and sign out.
 struct ProfileView: View {
+    // swiftlint:disable:next force_unwrapping
+    private static let privacyPolicyURL = URL(string: "https://example.com/privacy")!
+
     @State private var viewModel: ProfileViewModel
     @State private var isConfirmingSignOut = false
     @State private var isShowingSettings = false
+    @State private var isShowingNotifications = false
     @Environment(DependencyContainer.self) private var dependencies
 
     /// Creates the view with its view model.
@@ -30,6 +34,9 @@ struct ProfileView: View {
                 }
                 .sheet(isPresented: $isShowingSettings) {
                     SettingsView(viewModel: dependencies.settingsViewModel)
+                }
+                .sheet(isPresented: $isShowingNotifications) {
+                    NotificationsView()
                 }
                 .sheet(isPresented: $viewModel.isEditing) {
                     EditProfileView(viewModel: viewModel)
@@ -68,54 +75,146 @@ struct ProfileView: View {
 
     private func profileContent(for user: User) -> some View {
         ScrollView {
-            VStack(spacing: AppSpacing.lg) {
-                CardView {
-                    VStack(spacing: AppSpacing.md) {
-                        AvatarView(name: user.name, size: 88)
-                        VStack(spacing: AppSpacing.xs) {
-                            Text(user.name)
-                                .font(AppFont.title)
-                            Text(user.email)
-                                .font(AppFont.callout)
-                                .foregroundStyle(AppColors.textSecondary)
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                }
+            VStack(spacing: AppSpacing.md) {
+                header(for: user)
 
                 if let errorMessage = viewModel.errorMessage, !viewModel.isEditing {
                     ErrorBanner(message: errorMessage)
                 }
 
-                CardView {
-                    VStack(spacing: AppSpacing.md) {
-                        LabeledContent("Email", value: user.email)
-                        Divider()
-                        LabeledContent("Member Since") {
-                            Text(user.joinedAt, format: .dateTime.month(.wide).year())
-                        }
-                    }
-                }
+                stats(for: user)
+                menu
 
-                PrimaryButton("Edit Profile") {
-                    viewModel.beginEditing()
-                }
-
-                Button(role: .destructive) {
+                PrimaryButton("Sign Out", systemImage: AppImages.signOut, variant: .destructive, isLoading: viewModel.isSigningOut) {
                     isConfirmingSignOut = true
-                } label: {
-                    if viewModel.isSigningOut {
-                        ProgressView()
-                    } else {
-                        Label("Sign Out", systemImage: AppImages.signOut)
-                    }
                 }
                 .disabled(viewModel.isSigningOut)
                 .accessibilityIdentifier("profile.signOut")
+                .padding(.top, AppSpacing.sm)
+
+                Text("Version \(dependencies.settingsViewModel.appVersion)")
+                    .font(AppFont.caption)
+                    .foregroundStyle(AppColors.textTertiary)
             }
             .padding(AppSpacing.md)
         }
         .refreshable { await viewModel.loadProfile() }
+    }
+
+    // MARK: Sections
+
+    private func header(for user: User) -> some View {
+        CardView {
+            HStack(spacing: AppSpacing.md) {
+                AvatarView(name: user.name, size: 64)
+                VStack(alignment: .leading, spacing: AppSpacing.xxs) {
+                    Text(user.name)
+                        .font(AppFont.title)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Text(user.email)
+                        .font(AppFont.subheadline)
+                        .foregroundStyle(AppColors.textSecondary)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 0)
+                Button {
+                    viewModel.beginEditing()
+                } label: {
+                    Image(systemName: "pencil")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(AppColors.primary)
+                        .frame(width: 36, height: 36)
+                        .background(AppColors.primarySoft, in: Circle())
+                }
+                .buttonStyle(.pressable)
+                .accessibilityLabel(Text("Edit Profile"))
+            }
+        }
+    }
+
+    private func stats(for user: User) -> some View {
+        HStack(spacing: AppSpacing.sm + AppSpacing.xxs) {
+            stat(value: Text(dependencies.cartViewModel.itemCount, format: .number), title: "In Bag")
+            stat(value: Text(dependencies.wishlistViewModel.count, format: .number), title: "Wishlist")
+            stat(value: Text(user.joinedAt, format: .dateTime.year()), title: "Member Since")
+        }
+    }
+
+    private func stat(value: Text, title: LocalizedStringKey) -> some View {
+        VStack(spacing: AppSpacing.xxs) {
+            value
+                .font(AppFont.title.monospacedDigit())
+                .foregroundStyle(AppColors.textPrimary)
+            Text(title)
+                .font(AppFont.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, AppSpacing.sm + AppSpacing.xs)
+        .cardStyle(cornerRadius: AppRadius.medium)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var menu: some View {
+        CardView(padding: 0) {
+            VStack(spacing: 0) {
+                menuRow("Edit Profile", systemImage: AppImages.person, tint: AppColors.primary) {
+                    viewModel.beginEditing()
+                }
+                menuDivider
+                menuRow("Notifications", systemImage: AppImages.notifications, tint: AppColors.accentAmber) {
+                    isShowingNotifications = true
+                }
+                menuDivider
+                menuRow("Settings", systemImage: AppImages.settings, tint: AppColors.accentBlue) {
+                    isShowingSettings = true
+                }
+                menuDivider
+                Link(destination: Self.privacyPolicyURL) {
+                    menuRowLabel("Privacy Policy", systemImage: AppImages.privacy, tint: AppColors.accentTeal, trailingImage: "arrow.up.right")
+                }
+            }
+        }
+    }
+
+    private var menuDivider: some View {
+        Divider().padding(.leading, 60)
+    }
+
+    private func menuRow(
+        _ title: LocalizedStringKey,
+        systemImage: String,
+        tint: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            menuRowLabel(title, systemImage: systemImage, tint: tint, trailingImage: AppImages.chevronRight)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func menuRowLabel(
+        _ title: LocalizedStringKey,
+        systemImage: String,
+        tint: Color,
+        trailingImage: String
+    ) -> some View {
+        HStack(spacing: AppSpacing.sm + AppSpacing.xs) {
+            IconTile(systemImage: systemImage, tint: tint, size: 32)
+            Text(title)
+                .font(AppFont.body)
+                .foregroundStyle(AppColors.textPrimary)
+            Spacer()
+            Image(systemName: trailingImage)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(AppColors.textTertiary)
+        }
+        .padding(.horizontal, AppSpacing.md)
+        .frame(minHeight: 52)
+        .contentShape(Rectangle())
     }
 }
 

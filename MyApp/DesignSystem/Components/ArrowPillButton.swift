@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// White pill button with a small orange arrow circle, e.g. "Shop Now →".
+/// White pill button with a small brand-colored arrow circle, e.g. "Shop Now →".
 struct ArrowPillButton: View {
     let title: LocalizedStringKey
     let action: () -> Void
@@ -30,5 +30,5 @@ struct ArrowPillButton: View {
 #Preview {
     ArrowPillButton(title: "Shop Now") {}
         .padding()
-        .background(AppColors.blush)
+        .background(AppColors.primarySoft)
 }

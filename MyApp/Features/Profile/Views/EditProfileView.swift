@@ -8,6 +8,13 @@ struct EditProfileView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    AvatarView(name: viewModel.draftName, size: 88)
+                        .frame(maxWidth: .infinity)
+                        .animation(.default, value: viewModel.draftName)
+                }
+                .listRowBackground(Color.clear)
+
                 Section("Name") {
                     TextField("Full Name", text: $viewModel.draftName)
                         .textContentType(.name)
@@ -22,6 +29,8 @@ struct EditProfileView: View {
                     .listRowBackground(Color.clear)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.background)
             .navigationTitle("Edit Profile")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
