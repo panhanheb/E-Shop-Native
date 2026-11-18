@@ -6,11 +6,15 @@ struct ProductImageView: View {
     let product: Product
     /// Size of the placeholder icon.
     var iconSize: CGFloat = AppFontSize.iconLarge
+    /// Paints the white-and-tint backdrop; turn off to sit on a card that already has one.
+    var showsBackground = true
 
     var body: some View {
         ZStack {
-            AppColors.surface
-            product.category.tint.opacity(0.08)
+            if showsBackground {
+                AppColors.surface
+                product.category.tint.opacity(0.08)
+            }
 
             if let imageURL = product.imageURL {
                 AsyncImage(url: imageURL) { phase in

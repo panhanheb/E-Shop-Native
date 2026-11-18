@@ -20,6 +20,8 @@ final class DependencyContainer {
     let settingsViewModel: SettingsViewModel
     /// Whether the in-memory mock backend is in use.
     let isUsingMockServices: Bool
+    /// Saved search terms, shared by every Search screen.
+    let recentSearchStore: any RecentSearchStoreProtocol
 
     /// Creates the container from concrete services.
     init(
@@ -30,6 +32,7 @@ final class DependencyContainer {
         settingsService: any SettingsServiceProtocol,
         tokenStore: any TokenStoreProtocol,
         isUsingMockServices: Bool,
+        recentSearchStore: (any RecentSearchStoreProtocol)? = nil,
         cart: CartViewModel = CartViewModel(),
         wishlist: WishlistViewModel = WishlistViewModel(),
         appVersion: String = Bundle.main.appVersion
@@ -39,6 +42,7 @@ final class DependencyContainer {
         self.orderService = orderService
         self.profileService = profileService
         self.isUsingMockServices = isUsingMockServices
+        self.recentSearchStore = recentSearchStore ?? RecentSearchStore()
         self.sessionStore = SessionStore(
             tokenStore: tokenStore,
             authService: authService,
@@ -79,6 +83,7 @@ final class DependencyContainer {
         latency: Duration = .milliseconds(600),
         signedInUser: User? = nil,
         settingsService: (any SettingsServiceProtocol)? = nil,
+        recentSearchStore: (any RecentSearchStoreProtocol)? = nil,
         cart: CartViewModel = CartViewModel(),
         wishlist: WishlistViewModel = WishlistViewModel()
     ) -> DependencyContainer {
@@ -91,6 +96,7 @@ final class DependencyContainer {
             settingsService: settingsService ?? SettingsService(),
             tokenStore: InMemoryTokenStore(token: signedInUser == nil ? nil : "preview-token"),
             isUsingMockServices: true,
+            recentSearchStore: recentSearchStore,
             cart: cart,
             wishlist: wishlist
         )
@@ -102,6 +108,7 @@ final class DependencyContainer {
             latency: .zero,
             signedInUser: .mock,
             settingsService: MockSettingsService(),
+            recentSearchStore: InMemoryRecentSearchStore(searches: ["serum", "lipstick", "rose perfume"]),
             cart: CartViewModel(items: [
                 CartItem(product: Product.mocks[0], quantity: 1),
                 CartItem(product: Product.mocks[2], quantity: 2)
@@ -141,6 +148,11 @@ final class DependencyContainer {
             orderService: orderService,
             onOrderPlaced: { [cartViewModel] _ in cartViewModel.clear() }
         )
+    }
+
+    /// Creates the Search screen's view model, backed by the shared recent-search store.
+    func makeSearchViewModel() -> SearchViewModel {
+        SearchViewModel(store: recentSearchStore)
     }
 
     /// Creates the order history's view model.

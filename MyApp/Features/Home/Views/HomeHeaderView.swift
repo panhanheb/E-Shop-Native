@@ -86,57 +86,34 @@ struct CircleIconButton: View {
     }
 }
 
-/// Rounded search field with a filter button that opens the sort options.
-struct HomeSearchBar: View {
-    @Binding var text: String
-    @Binding var sort: ProductSort
+/// Looks like a search field; tapping it opens the Search screen.
+struct HomeSearchButton: View {
+    let action: () -> Void
 
     var body: some View {
-        HStack(spacing: AppSpacing.sm + AppSpacing.xxs) {
-            Image(systemName: AppImages.search)
-                .font(.system(size: 17, weight: .medium))
-                .foregroundStyle(AppColors.textSecondary)
-                .accessibilityHidden(true)
-
-            TextField("Search for products…", text: $text)
-                .font(AppFont.callout)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .submitLabel(.search)
-                .accessibilityIdentifier("home.search")
-
-            if !text.isEmpty {
-                Button {
-                    text = ""
-                } label: {
-                    Image(systemName: AppImages.clear)
-                        .foregroundStyle(AppColors.textTertiary)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("Clear Search"))
-            }
-
-            Menu {
-                Picker("Sort By", selection: $sort) {
-                    ForEach(ProductSort.allCases) { option in
-                        Text(option.title).tag(option)
-                    }
-                }
-            } label: {
+        Button(action: action) {
+            HStack(spacing: AppSpacing.sm + AppSpacing.xxs) {
+                Image(systemName: AppImages.search)
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundStyle(AppColors.textSecondary)
+                Text("Search for products…")
+                    .font(AppFont.callout)
+                    .foregroundStyle(AppColors.textTertiary)
+                Spacer()
                 Image(systemName: "slider.horizontal.3")
                     .font(.system(size: 17, weight: .medium))
                     .foregroundStyle(AppColors.primary)
-                    .frame(width: 32, height: 32)
-                    .contentShape(Rectangle())
             }
-            .accessibilityLabel(Text("Sort By"))
+            .padding(.horizontal, AppSpacing.md)
+            .frame(height: 50)
+            .background(AppColors.surface, in: Capsule())
+            .overlay(Capsule().strokeBorder(AppColors.hairline, lineWidth: 1))
+            .shadow(color: AppColors.shadow, radius: 8, y: 2)
+            .contentShape(Capsule())
         }
-        .padding(.leading, AppSpacing.md)
-        .padding(.trailing, AppSpacing.sm + AppSpacing.xxs)
-        .frame(height: 50)
-        .background(AppColors.surface, in: Capsule())
-        .overlay(Capsule().strokeBorder(AppColors.hairline, lineWidth: 1))
-        .shadow(color: AppColors.shadow, radius: 8, y: 2)
+        .buttonStyle(.pressable)
+        .accessibilityLabel(Text("Search"))
+        .accessibilityIdentifier("home.search")
     }
 }
 
@@ -150,7 +127,7 @@ struct HomeSearchBar: View {
             onOpenCart: {},
             onOpenNotifications: {}
         )
-        HomeSearchBar(text: .constant(""), sort: .constant(.featured))
+        HomeSearchButton {}
     }
     .padding()
     .background(AppColors.background)

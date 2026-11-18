@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The Home screen: profile header, search, promo banners, categories, Top Picks,
-/// Best Sellers, and a "Just For You" grid. While searching, shows filter chips and a results grid.
+/// The Home screen: profile header, search button (opens `SearchView`), promo banners,
+/// categories, Top Picks, Best Sellers, and a "Just For You" grid.
 struct HomeView: View {
     /// Shared catalog.
     @Bindable var catalog: ProductListViewModel
@@ -16,10 +16,8 @@ struct HomeView: View {
     @State private var path = NavigationPath()
     @State private var isShowingCart = false
     @State private var isShowingNotifications = false
+    @State private var isShowingSearch = false
     @State private var toastMessage: String?
-    /// Search filters.
-    @State private var searchCategory: ProductCategory?
-    @State private var isOnSaleOnly = false
 
     private var userName: String {
         let name = dependencies.sessionStore.currentUser?.name ?? ""
@@ -39,22 +37,21 @@ struct HomeView: View {
                             onOpenCart: { isShowingCart = true },
                             onOpenNotifications: { isShowingNotifications = true }
                         )
-                        HomeSearchBar(text: $catalog.searchText, sort: $catalog.sort)
+                        HomeSearchButton {
+                            catalog.searchText = ""
+                            isShowingSearch = true
+                        }
                     }
                     .padding(.horizontal, AppSpacing.md)
 
-                    if catalog.isSearching {
-                        searchResults
-                    } else {
-                        HeroBannerCarousel { collection in
-                            path.append(collection)
-                        }
-
-                        HomeCategoriesCard { onSelectTab(.categories) }
-                            .padding(.horizontal, AppSpacing.md)
-
-                        catalogSections
+                    HeroBannerCarousel { collection in
+                        path.append(collection)
                     }
+
+                    HomeCategoriesCard { onSelectTab(.categories) }
+                        .padding(.horizontal, AppSpacing.md)
+
+                    catalogSections
                 }
                 .padding(.top, AppSpacing.sm)
                 .padding(.bottom, AppSpacing.lg)
@@ -68,6 +65,13 @@ struct HomeView: View {
             }
             .navigationDestination(for: ProductCollection.self) { collection in
                 ProductCollectionView(catalog: catalog, collection: collection)
+            }
+            .navigationDestination(isPresented: $isShowingSearch) {
+                SearchView(
+                    catalog: catalog,
+                    viewModel: dependencies.makeSearchViewModel(),
+                    onOpenCart: { isShowingCart = true }
+                )
             }
             .sheet(isPresented: $isShowingCart) {
                 CartView(cart: dependencies.cartViewModel, onClose: { isShowingCart = false }) {
@@ -153,75 +157,6 @@ struct HomeView: View {
             ProductGridView(products: catalog.products(in: .all), onAdded: { showAddedToast($0) })
                 .padding(.horizontal, AppSpacing.md)
         }
-    }
-
-    // MARK: Search
-
-    private var filteredSearchResults: [Product] {
-        catalog.searchResults.filter { product in
-            let matchesCategory = searchCategory.map { product.category == $0 } ?? true
-            let matchesSale = !isOnSaleOnly || (product.originalPrice.map { $0 > product.price } ?? false)
-            return matchesCategory && matchesSale
-        }
-    }
-
-    private var searchResults: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
-            searchFilters
-
-            let results = filteredSearchResults
-            if results.isEmpty {
-                EmptyStateView(
-                    title: "No Matching Products",
-                    systemImage: AppImages.search,
-                    message: "Try a different search or category."
-                )
-                .frame(minHeight: 280)
-            } else {
-                Text("\(results.count) results")
-                    .font(AppFont.subheadline.weight(.semibold))
-                    .foregroundStyle(AppColors.textSecondary)
-                    .padding(.horizontal, AppSpacing.md)
-
-                ProductGridView(products: results, onAdded: { showAddedToast($0) })
-                    .padding(.horizontal, AppSpacing.md)
-            }
-        }
-    }
-
-    private var searchFilters: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: AppSpacing.sm) {
-                Menu {
-                    Picker("Sort By", selection: $catalog.sort) {
-                        ForEach(ProductSort.allCases) { option in
-                            Text(option.title).tag(option)
-                        }
-                    }
-                } label: {
-                    FilterChip(title: "Sort By", systemImage: AppImages.sort, isSelected: catalog.sort != .featured)
-                }
-
-                Button {
-                    isOnSaleOnly.toggle()
-                } label: {
-                    FilterChip(title: "On Sale", systemImage: AppImages.offers, isSelected: isOnSaleOnly)
-                }
-                .buttonStyle(.plain)
-
-                ForEach(ProductCategory.allCases) { category in
-                    Button {
-                        searchCategory = searchCategory == category ? nil : category
-                    } label: {
-                        FilterChip(title: category.title, isSelected: searchCategory == category)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(.horizontal, AppSpacing.md)
-        }
-        .sensoryFeedback(.selection, trigger: searchCategory)
-        .sensoryFeedback(.selection, trigger: isOnSaleOnly)
     }
 
     // MARK: Helpers

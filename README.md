@@ -4,13 +4,15 @@ A beauty e-commerce app for iOS 17+ built with SwiftUI, MVVM, and Swift 6 strict
 
 | Tab | Feature folder | What it does |
 | --- | --- | --- |
-| Home | `Features/Home` | Greeting header (menu, notifications, bag with item count), swipeable hero banners, search with sort filter, category circles (Skincare, Makeup, Fragrance, Haircare, Tools, Offers), a Best Sellers row, a Special Offer banner, and a "Just For You" grid. Every card has a wishlist heart and an orange + button that adds it to the bag. |
+| Home | `Features/Home` | Profile header (avatar, location, bag and notification buttons), a search button, swipeable promo banners, a categories card, Top Picks, a Best Sellers row, and a "Just For You" grid. Every card has a wishlist heart and a + button that adds it to the bag. |
 | Categories | `Features/Home` | One card per category, plus Offers, with product counts. Each opens a sortable product grid. |
 | Wishlist | `Features/Wishlist` | Hearted products, with the count shown on the tab badge |
 | Orders | `Features/Orders` | Order history with status badges, plus order detail |
 | Profile | `Features/Profile` | View and edit your name, open Settings (gear button), and sign out (which also empties the cart and wishlist) |
 
-The **cart and checkout** (`Features/Cart`) open from the bag button on Home. Checkout takes a delivery address and a payment method (cash on delivery, KHQR, or card). **Settings** (theme, notifications, haptics, language) open from the Home menu or from Profile.
+**Search** (`Features/Search`) opens from the Home search button: recent searches (saved on the device) while typing, category and On Sale filter chips, sort, and a Popular / results grid.
+
+The **cart and checkout** (`Features/Cart`) open from the bag button on Home. Checkout takes a delivery address and a payment method (cash on delivery, KHQR, or card). **Settings** (theme, notifications, haptics, language) open from Profile.
 
 Sign-in and registration are in `Features/Authentication`. Prices are in USD (`AppCurrency`). Shipping is free from $50; below that it costs $2.50 (`ShippingPolicy`).
 
